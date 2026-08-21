@@ -255,7 +255,7 @@ const NODES = [
 {id:'ref_scenografie', type:'referencja', label:'Sets and props (jobs)', details:{status:'READY', id_tech:'Congress hall (5A v2): f05c8798 · wax seal "Colonel of Engineers" (5C v2): 98fd3d60 · print shop interior (4A): 39e3b1bc · facade "B. FRANKLIN — PRINTER & STATIONER": bbcce15d · fort map (1F): be8e66f7.', uwagi:'PITFALLS: the print-shop facade as an image reference trips the NSFW filter — use a text description. nano_banana_flash gets mass-flagged "nsfw" (false positives) → switch to seedream_v4_5 (2560×1440) or nano_banana_pro (good for text on documents/signs).'}},
 
 // ---------- DOCUMENTS ----------
-{id:'doc_scenariusz', type:'dokument', label:'"Freedom" screenplay, pl v2', details:{plik:'Kosciuszko_Freedom_scenariusz - pl v2.docx', opis:'The WORKING literary version (text canon), 16 scenes, ~9–10 min of real time (too long for 7 min — Marcin is NOT cutting yet). Applied fixes: no lone V.O. after Saratoga, corrected Franklin dialogue, the general = Horatio Gates, gun correction instead of a "fire" order. Variants: PL_EN (bilingual, EN in grey, Courier), PL_dialogi_EN. French lines stay in French + PL/EN subtitle glosses. The v3 draft with a narrative frame (a 1798 will prologue) was REJECTED, but scenes 14–15 inherited its DNA.'}},
+{id:'doc_scenariusz', type:'dokument', label:'"Freedom" screenplay, pl v2', details:{plik:'Kosciuszko_Freedom_scenariusz - pl v2.docx', opis:'The WORKING literary version (text canon), 16 scenes, ~9–10 min of real time in the structural plan (final cut runtime: 17 min 30 s). Applied fixes: no lone V.O. after Saratoga, corrected Franklin dialogue, the general = Horatio Gates, gun correction instead of a "fire" order. Variants: PL_EN (bilingual, EN in grey, Courier), PL_dialogi_EN. French lines stay in French + PL/EN subtitle glosses. The v3 draft with a narrative frame (a 1798 will prologue) was REJECTED, but scenes 14–15 inherited its DNA.'}},
 {id:'doc_seedance', type:'dokument', label:'Seedance 15 s prompts (SEQ 01–40)', details:{plik:'Kosciuszko_Seedance_prompty_15s.docx', opis:'40 sequences × 15 s = ~10:00. Prompt construction: [CHARACTER BLOCK] + [SEQUENCE PROMPT] + [MASTER PROMPT] + shared negative. Dialogue written DIRECTLY into the prompts (French in French, the rest in EN — they drive performance/lip movement); final PL audio recorded separately (mind the lip-sync). One scene = one session/seed; do not mix models within a scene. If your Seedance variant caps at 10 s — cut at Shot 1/2/3 boundaries.'}},
 {id:'doc_biblia', type:'dokument', label:'Technical bible v1.0', details:{plik:'Kosciuszko_Biblia_Techniczna.docx', opis:'Virtual package: ARRI ALEXA 65 + vintage Panavision, Kodak Vision3 16 mm emulation (250D day / 500T night), 24 fps, 16:9 UHD (Marcin\'s decision, not 2.39:1), Kodak 2383 LUT. Grain/halation NOT in prompts — one uniform layer in post (Dehancer/Resolve); gate weave 0.5–1 px. Motivated light only (Vermeer / Barry Lyndon / Rembrandt). A three-act colour arc. References: Carol, The Hurt Locker, Barry Lyndon, 1917. Master prompt + a 16-scene lighting breakdown.'}},
 {id:'doc_muzyka', type:'dokument', label:'Music bible + prompts', details:{plik:'Kosciuszko_Muzyka_Biblia_i_Prompty.docx', opis:'The "FLAME" concept: a Zimmer hybrid + period colour; D minor → D MAJOR; cue sheet M1–M10; 5 themes (Kosciuszko/Flame, Freedom/All Men, Ocean, Conscience/glass harmonica, War Rhythm); 3 structural silences; braam max 2×; wordless choir only; full tutti only in M10. EN prompts for Suno/Udio — no composer names inside prompts.'}},
@@ -650,7 +650,7 @@ const HISTORIA = [
 function renderTimeline(){
   const sceny = NODES.filter(n=>n.type==='scena');
   const cues = NODES.filter(n=>n.type==='muzyka');
-  let h = `<div class="tl-sekcja"><h2>Film · 0:00–10:00 (40 Seedance sequences · 16 scenes · cues M1–M10)</h2>`;
+  let h = `<div class="tl-sekcja"><h2>Film · 40 Seedance sequences · 16 scenes · cues M1–M10 <span style="font-size:12px;color:#98a2b0;font-weight:normal;letter-spacing:.02em">(timecodes = 10-min structural plan · final runtime 17:30)</span></h2>`;
   sceny.forEach(s=>{
     const seqs = NODES.filter(n=>n.type==='sekwencja' && n._sc===s.id).map(n=>n.label.replace(' · ',' ')).join(' · ');
     const cue = EDGES.filter(e=>e.to===s.id && (NODE_MAP[e.from]||{}).type==='muzyka').map(e=>NODE_MAP[e.from].label).join(' + ');
@@ -693,5 +693,6 @@ document.getElementById('search').addEventListener('input', e=>{
 renderTimeline();
 renderGraph('');
 </script>
+<a href="index.html" style="position:fixed;top:10px;right:12px;z-index:9999;font-family:Georgia,serif;font-size:12.5px;letter-spacing:.08em;color:#e0b356;text-decoration:none;background:rgba(13,17,23,.85);border:1px solid #2a3444;border-radius:20px;padding:6px 14px;">&#8962; FREEDOM Base</a>
 </body>
 </html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREEDOM — Credits</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121924; --line:#233042;
+    --tx:#e9e4d8; --tx2:#93a0b0; --gold:#e0b356; --gold2:#c89a3f;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--tx); font-family:'EB Garamond', Garamond, Georgia, serif; min-height:100vh; }
+  .grain{ position:fixed; inset:0; pointer-events:none; z-index:3; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.9'/></svg>"); }
+  .vignette{ position:fixed; inset:0; pointer-events:none; z-index:2;
+    background:radial-gradient(ellipse at 50% 25%, transparent 50%, rgba(0,0,0,.5) 100%); }
+  nav{
+    position:sticky; top:0; z-index:10; display:flex; justify-content:center; gap:6px;
+    padding:14px 12px; background:rgba(11,15,20,.9); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    font-family:'Cinzel', Georgia, serif; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+  }
+  nav a{ color:var(--tx2); text-decoration:none; padding:6px 16px; border-radius:18px; transition:color .15s; }
+  nav a:hover{ color:var(--gold); }
+  nav a.on{ color:var(--gold); border:1px solid var(--line); background:#0f1520; }
+  .wrap{ max-width:680px; margin:0 auto; padding:clamp(50px,9vh,90px) 24px 60px; text-align:center; }
+  .over{ font-family:'Cinzel',serif; font-size:12px; letter-spacing:.5em; text-indent:.5em; color:var(--tx2); text-transform:uppercase; }
+  h1{ font-family:'Cinzel',serif; font-weight:400; font-size:clamp(40px,7vw,64px); letter-spacing:.32em; text-indent:.32em; margin-top:16px;
+      background:linear-gradient(180deg,#f6efe0 20%, var(--gold) 85%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .sub{ font-style:italic; font-size:clamp(15px,2vw,20px); color:var(--tx2); margin-top:12px; letter-spacing:.08em; }
+  .rule{ width:min(280px,60%); height:1px; margin:44px auto; background:linear-gradient(90deg,transparent,var(--gold2),transparent); }
+  .block{ margin-top:clamp(38px,5vw,54px); }
+  .role{ font-family:'Cinzel',serif; font-size:12px; letter-spacing:.42em; text-indent:.42em; text-transform:uppercase; color:#9b917d; margin-bottom:12px; }
+  .name{ font-size:clamp(18px,2.4vw,24px); color:#f2ead8; letter-spacing:.05em; line-height:1.8; }
+  .tbc .role{ color:#6f6446; }
+  .tbc .name{ color:#7c7566; font-size:clamp(15px,2vw,19px); font-style:italic; }
+  .closing{ margin-top:clamp(64px,9vw,100px); }
+  .prodline{ font-family:'Cinzel',serif; font-size:clamp(13px,1.8vw,18px); letter-spacing:.3em; text-indent:.3em; text-transform:uppercase; color:#f2ead8; }
+  .copyright{ font-size:13.5px; color:#6d7887; margin-top:16px; letter-spacing:.06em; }
+</style>
+</head>
+<body>
+<div class="grain"></div><div class="vignette"></div>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="Kosciuszko_Graph_EN.html">Dependency&nbsp;Graph</a>
+  <a href="Kosciuszko_Timeline_EN.html">Timeline</a>
+  <a class="on" href="credits.html">Credits</a>
+</nav>
+<div class="wrap">
+  <div class="over">A fully AI-crafted short film &#183; 17 min 30 s</div>
+  <h1>FREEDOM</h1>
+  <div class="sub">The Story of Thaddeus Kosciuszko</div>
+  <div class="rule"></div>
+  <div class="block"><div class="role">Directed by</div><div class="name">Marcin Rossa</div></div>
+  <div class="block"><div class="role">Produced by</div>
+    <div class="name">Thomas Righini Carrington</div>
+    <div class="name">Marcin Rossa</div></div>
+  <div class="block"><div class="role">Production Manager</div><div class="name">Kasia Krasuska</div></div>
+  <div class="block"><div class="role">On-Set Director of Photography</div><div class="name">Mateusz Was&#261;&#380;nik</div></div>
+  <div class="block"><div class="role">AI Director of Photography</div>
+    <div class="name">Jan W&oacute;jcicki</div>
+    <div class="name">Marcin Rossa</div></div>
+  <div class="block"><div class="role">AI Creators</div>
+    <div class="name">Marcin Rossa</div>
+    <div class="name">Jan W&oacute;jcicki</div>
+    <div class="name">Szymon Satora</div>
+    <div class="name">Magdalena Lissowska-Wo&#322;owiec</div></div>
+  <div class="block"><div class="role">Edited by</div>
+    <div class="name">Jan W&oacute;jcicki</div>
+    <div class="name">Marcin Rossa</div></div>
+  <div class="block"><div class="role">Cast</div>
+    <div class="name">Stanis&#322;aw Kowalski</div>
+    <div class="name">Christopher Falconnet</div>
+    <div class="name">Piotr W&#322;odarczyk</div>
+    <div class="name">Mariusz Po&#322;e&#263;</div>
+    <div class="name">Jeff Birimbi</div>
+    <div class="name">Dawid Kula</div>
+    <div class="name">Franek Rossa</div>
+    <div class="name">Krzysztof Rysz</div>
+    <div class="name">Victor Kivunangoma</div></div>
+  <div class="block"><div class="role">Casting</div><div class="name">Casting Studio</div></div>
+  <div class="block"><div class="role">Sound on Set</div><div class="name">Mateusz Was&#261;&#380;nik</div></div>
+  <div class="block"><div class="role">Location &amp; Lighting</div><div class="name">Studio Zach&oacute;d</div></div>
+  <div class="block"><div class="role">Gaffer</div><div class="name">Andrzej P&#281;za</div></div>
+  <div class="block"><div class="role">Behind the Scenes</div><div class="name">Jan W&oacute;jcicki</div></div>
+  <div class="block"><div class="role">Historical Consultant</div><div class="name">Tomasz Rossa</div></div>
+  <div class="block tbc"><div class="role">Music</div><div class="name">to be announced</div></div>
+  <div class="block tbc"><div class="role">Sound Design &amp; Mix</div><div class="name">to be announced</div></div>
+  <div class="block tbc"><div class="role">Colorist</div><div class="name">to be announced</div></div>
+  <div class="block tbc"><div class="role">Special Thanks</div><div class="name">to be announced</div></div>
+  <div class="closing">
+    <div class="prodline">A James Drake Media &amp; Creait.Me Production</div>
+    <div class="copyright">&#169; 2026 James Drake Media &amp; Creait.Me. All Rights Reserved.</div>
+  </div>
+</div>
+</body>
+</html>

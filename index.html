@@ -1,50 +1,127 @@
 <!DOCTYPE html>
-<html lang="pl">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KOŚCIUSZKO · FREEDOM — baza produkcyjna</title>
+<title>FREEDOM — Production Base</title>
+<meta name="description" content="Production database of FREEDOM — the story of Thaddeus Kosciuszko. A fully AI-crafted short film, 17 min 30 s.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
-  :root{ --bg:#0d1117; --panel:#161d27; --line:#2a3444; --tx:#e6e2d8; --tx2:#98a2b0; --gold:#e0b356; }
+  :root{
+    --bg:#0b0f14; --panel:#121924; --panel2:#0f1520; --line:#233042;
+    --tx:#e9e4d8; --tx2:#93a0b0; --gold:#e0b356; --gold2:#c89a3f;
+  }
   *{ margin:0; padding:0; box-sizing:border-box; }
-  body{ background:var(--bg); color:var(--tx); font-family:Georgia,'Times New Roman',serif; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
-  .wrap{ max-width:760px; width:100%; }
-  h1{ font-size:30px; letter-spacing:.06em; color:var(--gold); text-align:center; }
-  .sub{ text-align:center; color:var(--tx2); font-size:14.5px; margin:10px 0 34px; line-height:1.6; }
-  .lang{ font-family:Helvetica,Arial,sans-serif; font-size:11px; letter-spacing:.14em; color:var(--tx2); text-transform:uppercase; margin:26px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px; }
-  a.card{ display:block; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 20px; margin-bottom:12px; text-decoration:none; color:var(--tx); transition:border-color .15s, transform .15s; }
-  a.card:hover{ border-color:var(--gold); transform:translateX(4px); }
-  a.card b{ color:var(--gold); font-size:16.5px; }
-  a.card span{ display:block; color:var(--tx2); font-size:13.5px; margin-top:5px; line-height:1.55; }
-  .foot{ text-align:center; color:var(--tx2); font-size:12px; margin-top:36px; }
+  html{ scroll-behavior:smooth; }
+  body{
+    background:var(--bg); color:var(--tx);
+    font-family:'EB Garamond', Garamond, Georgia, serif;
+    min-height:100vh; overflow-x:hidden;
+  }
+  .grain{ position:fixed; inset:0; pointer-events:none; z-index:3; opacity:.05; mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.9'/></svg>"); }
+  .vignette{ position:fixed; inset:0; pointer-events:none; z-index:2;
+    background:radial-gradient(ellipse at 50% 30%, transparent 50%, rgba(0,0,0,.5) 100%); }
+  nav{
+    position:sticky; top:0; z-index:10; display:flex; justify-content:center; gap:6px;
+    padding:14px 12px; background:rgba(11,15,20,.9); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    font-family:'Cinzel', Georgia, serif; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+  }
+  nav a{ color:var(--tx2); text-decoration:none; padding:6px 16px; border-radius:18px; transition:color .15s; }
+  nav a:hover{ color:var(--gold); }
+  nav a.on{ color:var(--gold); border:1px solid var(--line); background:var(--panel2); }
+  .hero{ position:relative; text-align:center; padding:clamp(70px,12vh,130px) 20px 30px; }
+  .hero .over{ font-family:'Cinzel',serif; font-size:clamp(11px,1.3vw,14px); letter-spacing:.5em; text-indent:.5em; color:var(--tx2); text-transform:uppercase; }
+  .hero h1{
+    font-family:'Cinzel', Georgia, serif; font-weight:400;
+    font-size:clamp(52px,9vw,110px); letter-spacing:.32em; text-indent:.32em;
+    margin-top:18px; color:var(--tx);
+    background:linear-gradient(180deg,#f6efe0 20%, var(--gold) 85%);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+    text-shadow:0 0 60px rgba(224,179,86,.12);
+  }
+  .hero .sub{ font-style:italic; font-size:clamp(16px,2.2vw,23px); color:var(--tx2); margin-top:14px; letter-spacing:.08em; }
+  .rule{ width:min(320px,60%); height:1px; margin:34px auto; background:linear-gradient(90deg,transparent,var(--gold2),transparent); }
+  .stats{ display:flex; flex-wrap:wrap; justify-content:center; gap:clamp(18px,4vw,54px); }
+  .stat{ text-align:center; }
+  .stat b{ display:block; font-family:'Cinzel',serif; font-weight:500; font-size:clamp(20px,2.6vw,30px); color:var(--gold); letter-spacing:.06em; }
+  .stat span{ display:block; margin-top:6px; font-size:12px; letter-spacing:.24em; text-transform:uppercase; color:var(--tx2); }
+  .intro{ max-width:640px; margin:44px auto 0; text-align:center; font-size:clamp(15.5px,1.8vw,18.5px); line-height:1.85; color:#c6c0b2; padding:0 20px; }
+  .cards{ display:grid; grid-template-columns:repeat(auto-fit,minmax(290px,1fr)); gap:20px; max-width:960px; margin:56px auto 0; padding:0 20px; }
+  a.card{
+    position:relative; display:block; text-decoration:none; color:var(--tx);
+    background:linear-gradient(160deg,var(--panel) 0%, var(--panel2) 100%);
+    border:1px solid var(--line); border-radius:14px; padding:30px 28px 26px; overflow:hidden;
+    transition:transform .2s, border-color .2s, box-shadow .2s;
+  }
+  a.card::before{ content:''; position:absolute; top:0; left:0; right:0; height:2px;
+    background:linear-gradient(90deg,transparent,var(--gold),transparent); opacity:0; transition:opacity .2s; }
+  a.card:hover{ transform:translateY(-4px); border-color:#3a4a60; box-shadow:0 14px 40px rgba(0,0,0,.45); }
+  a.card:hover::before{ opacity:1; }
+  .card .glyph{ font-size:30px; }
+  .card h2{ font-family:'Cinzel',serif; font-weight:500; font-size:19px; letter-spacing:.12em; color:var(--gold); margin:14px 0 10px; text-transform:uppercase; }
+  .card p{ font-size:15.5px; line-height:1.7; color:var(--tx2); }
+  .card .go{ display:inline-block; margin-top:16px; font-family:'Cinzel',serif; font-size:11.5px; letter-spacing:.26em; text-transform:uppercase; color:var(--tx); border-bottom:1px solid var(--gold2); padding-bottom:3px; }
+  footer{ margin-top:90px; padding:34px 20px 44px; text-align:center; border-top:1px solid var(--line); }
+  footer .prod{ font-family:'Cinzel',serif; font-size:12.5px; letter-spacing:.3em; text-transform:uppercase; color:var(--tx2); }
+  footer .cc{ margin-top:10px; font-size:13px; color:#6d7887; letter-spacing:.06em; }
 </style>
 </head>
 <body>
-<div class="wrap">
-  <h1>KOŚCIUSZKO · „FREEDOM"</h1>
-  <p class="sub">Baza wszystkich zależności filmu krótkometrażowego (~7 min, produkcja w pełni AI):<br>postacie · sceny · wątki · oś czasu · muzyka · referencje generacyjne</p>
-
-  <div class="lang">Polski</div>
-  <a class="card" href="Kosciuszko_Graf_Zaleznosci.html">
-    <b>🔗 Graf zależności</b>
-    <span>Mapa postaci — kółka z twarzami i podpisane relacje „kto z kim i dlaczego" — oraz pełny graf: 120 węzłów / 221 krawędzi z filtrami i wyszukiwarką. Kółka można przeciągać.</span>
-  </a>
-  <a class="card" href="Kosciuszko_Baza_Zaleznosci.html">
-    <b>📜 Oś czasu</b>
-    <span>Pionowa oś z mapą narracyjną torów bohaterów, karty 16 scen w 3 aktach, historia 1746–1817, wątki, cue sheet M1–M10 i referencje ze statusami.</span>
-  </a>
-
-  <div class="lang">English</div>
+<div class="grain"></div><div class="vignette"></div>
+<nav>
+  <a class="on" href="index.html">Home</a>
+  <a href="Kosciuszko_Graph_EN.html">Dependency&nbsp;Graph</a>
+  <a href="Kosciuszko_Timeline_EN.html">Timeline</a>
+  <a href="credits.html">Credits</a>
+</nav>
+<header class="hero">
+  <div class="over">A fully AI-crafted short film</div>
+  <h1>FREEDOM</h1>
+  <div class="sub">The Story of Thaddeus Kosciuszko</div>
+  <div class="rule"></div>
+  <div class="stats">
+    <div class="stat"><b>17:30</b><span>Runtime</span></div>
+    <div class="stat"><b>16</b><span>Scenes</span></div>
+    <div class="stat"><b>12</b><span>Characters</span></div>
+    <div class="stat"><b>40</b><span>AI Sequences</span></div>
+    <div class="stat"><b>M1&#8211;M10</b><span>Music Cues</span></div>
+  </div>
+  <p class="intro">The complete production base of the film &#8212; every character, scene, theme,
+  music cue and AI generation reference, and how they all connect: from a young engineer's oath
+  in 1776 to the will he left behind, and the flame it still carries.</p>
+</header>
+<main class="cards">
   <a class="card" href="Kosciuszko_Graph_EN.html">
-    <b>🔗 Dependency graph</b>
-    <span>Character map with faces and labelled relationships, plus the full production graph — 120 nodes / 221 edges with filters and search.</span>
+    <div class="glyph">&#128279;</div>
+    <h2>Dependency Graph</h2>
+    <p>An interactive character map &#8212; portraits, labelled relationships and why each bond matters
+    to the story &#8212; plus the full production graph: 120 nodes and 221 edges linking scenes,
+    sequences, themes, locations, music and references. Drag, filter, search.</p>
+    <span class="go">Open the graph &#8594;</span>
   </a>
   <a class="card" href="Kosciuszko_Timeline_EN.html">
-    <b>📜 Timeline</b>
-    <span>Vertical timeline with a narrative map of character lanes, 16 scene cards in 3 acts, history 1746–1817, themes, music cue sheet and AI references.</span>
+    <div class="glyph">&#128220;</div>
+    <h2>Timeline</h2>
+    <p>A vertical timeline with a narrative map of character lanes &#8212; who appears when, and with
+    whom. Sixteen scene cards across three acts, the historical span 1746&#8211;1817, the film's
+    themes, the music cue sheet and AI reference statuses.</p>
+    <span class="go">Open the timeline &#8594;</span>
   </a>
-
-  <p class="foot">Marcin Rossa · creait.me · 2026</p>
-</div>
+  <a class="card" href="credits.html">
+    <div class="glyph">&#127916;</div>
+    <h2>Credits</h2>
+    <p>The people behind the film &#8212; direction, production, AI creation, cinematography, editing,
+    cast and crew of a hybrid production where live-action craft meets AI image-making.</p>
+    <span class="go">See the credits &#8594;</span>
+  </a>
+</main>
+<footer>
+  <div class="prod">A James Drake Media &amp; Creait.Me Production</div>
+  <div class="cc">&#169; 2026 James Drake Media &amp; Creait.Me. All Rights Reserved.</div>
+</footer>
 </body>
 </html>
