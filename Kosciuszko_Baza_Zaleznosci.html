@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOŚCIUSZKO „FREEDOM" — baza produkcyjna / oś czasu</title>
+<style>
+:root{
+  --bg:#0d1117; --panel:#161d27; --panel2:#1c2532; --line:#2a3444;
+  --tx:#e6e2d8; --tx2:#98a2b0; --gold:#e0b356;
+  --w-wolnosc:#d9a441; --w-niewolnictwo:#9a6fc4; --w-testament:#c95d5d; --w-inzynier:#5b8dd9;
+  --w-zycie:#5fa87a; --w-plomien:#e07b39; --w-pokora:#7fb3c8; --w-ocean:#4a7ba6;
+}
+*{box-sizing:border-box; margin:0; padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--bg); color:var(--tx); font:15px/1.55 'Georgia','Times New Roman',serif}
+.wrap{max-width:1060px; margin:0 auto; padding:0 24px 80px}
+header{padding:52px 0 30px; text-align:center; border-bottom:1px solid var(--line)}
+header h1{font-size:34px; letter-spacing:10px; font-weight:400; color:var(--gold)}
+header .sub{color:var(--tx2); font-size:14px; letter-spacing:3px; margin-top:8px; text-transform:uppercase}
+header .meta{color:var(--tx2); font-size:12.5px; margin-top:14px; font-style:italic}
+nav{position:sticky; top:0; z-index:50; background:rgba(13,17,23,.94); backdrop-filter:blur(6px); border-bottom:1px solid var(--line); display:flex; justify-content:center; gap:4px; padding:10px 8px; flex-wrap:wrap}
+nav a{color:var(--tx2); text-decoration:none; font:13px 'Segoe UI',sans-serif; padding:5px 13px; border-radius:5px}
+nav a:hover{color:var(--gold); background:var(--panel2)}
+h2.sekcja{font:15px 'Segoe UI',sans-serif; letter-spacing:4px; text-transform:uppercase; color:var(--gold); margin:64px 0 8px; text-align:center}
+.sekcja-sub{text-align:center; color:var(--tx2); font-size:13.5px; margin-bottom:30px; font-style:italic}
+/* OBSADA */
+.obsada{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:14px}
+.aktor{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 10px 12px; text-align:center; cursor:pointer; transition:border-color .15s, transform .15s}
+.aktor:hover{border-color:var(--gold)}
+.aktor.aktywny{border-color:var(--gold); box-shadow:0 0 0 1px var(--gold)}
+.aktor img, .aktor .mono{width:86px; height:86px; border-radius:50%; object-fit:cover; object-position:top; border:2.5px solid var(--lk,var(--line)); display:block; margin:0 auto 10px; background:var(--panel2)}
+.aktor .mono{display:flex; align-items:center; justify-content:center; font:600 26px 'Segoe UI',sans-serif; color:var(--tx2); letter-spacing:1px}
+.aktor b{display:block; font-size:14px; font-weight:600; line-height:1.3}
+.aktor small{color:var(--tx2); font:11.5px 'Segoe UI',sans-serif; display:block; margin-top:4px}
+.aktor .brak{color:#c9885d; font-size:10.5px}
+#filtr-info{display:none; text-align:center; margin:16px 0 0; font:13px 'Segoe UI',sans-serif; color:var(--gold)}
+#filtr-info span{cursor:pointer; text-decoration:underline; color:var(--tx2)}
+/* OŚ CZASU */
+.akt{margin:44px 0 20px; padding:12px 18px; background:linear-gradient(90deg, var(--panel2), transparent); border-left:3px solid var(--gold)}
+.akt b{font-size:15px; letter-spacing:2px}
+.akt span{color:var(--tx2); font-size:13px; display:block; margin-top:3px; font-style:italic}
+/* mapa narracyjna: tory postaci + kolumna scen */
+#mapa{position:relative; display:flex; gap:20px; align-items:stretch}
+#lanes{position:relative; flex:0 0 auto}
+#lane-heads{position:sticky; top:46px; z-index:5; display:flex; padding-bottom:8px; background:linear-gradient(180deg, var(--bg) 78%, transparent)}
+.lane-head{width:30px; display:flex; justify-content:center; align-items:center; cursor:pointer}
+.lane-head img,.lane-head .lm{width:24px; height:24px; border-radius:50%; object-fit:cover; object-position:top; border:2px solid var(--lk,#888); background:var(--panel2); display:block; transition:transform .15s}
+.lane-head .lm{display:flex; align-items:center; justify-content:center; font:600 10px 'Segoe UI',sans-serif; color:var(--tx2)}
+.lane-head:hover img,.lane-head:hover .lm{transform:scale(1.25)}
+.lane-head.aktywny img,.lane-head.aktywny .lm{transform:scale(1.25); box-shadow:0 0 8px var(--lk)}
+#mapa-svg{position:absolute; left:0; top:0; overflow:visible}
+#kol-sceny{flex:1; min-width:0}
+.scena{position:relative; margin:0 0 22px; background:var(--panel); border:1px solid var(--line); border-left:3px solid var(--kolor,#5b8dd9); border-radius:10px; padding:16px 18px; transition:opacity .2s}
+.sc-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap}
+.scena .czas{font:600 13px 'Segoe UI',sans-serif; color:var(--gold); white-space:nowrap}
+.scena .czas small{font-weight:400; color:var(--tx2); font-size:11.5px; margin-left:6px}
+.scena h3{font-size:17px; font-weight:600; margin-bottom:2px}
+.scena .lok{color:var(--tx2); font:12px 'Segoe UI',sans-serif; letter-spacing:1px; text-transform:uppercase}
+.scena .opis{margin:10px 0 0; font-size:14.5px; color:#cfd4db}
+.pasek{display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-top:12px}
+.pasek img,.pasek .mono-s{width:34px; height:34px; border-radius:50%; object-fit:cover; object-position:top; border:1.5px solid var(--line); background:var(--panel2)}
+.pasek .mono-s{display:inline-flex; align-items:center; justify-content:center; font:600 12px 'Segoe UI',sans-serif; color:var(--tx2)}
+.chip{font:11.5px 'Segoe UI',sans-serif; padding:3px 9px; border-radius:11px; border:1px solid; opacity:.95}
+.chip.cue{color:#b492d6; border-color:#9a6fc4; margin-left:auto}
+.scena details{margin-top:12px; font:13.5px 'Segoe UI',sans-serif}
+.scena summary{cursor:pointer; color:var(--tx2); font-size:12.5px; letter-spacing:1px; text-transform:uppercase}
+.scena summary:hover{color:var(--gold)}
+.det{margin-top:10px; display:grid; gap:10px}
+.det h4{font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--tx2); margin-bottom:3px}
+.det p{color:#cfd4db; white-space:pre-wrap}
+.det .cytat{border-left:2px solid var(--gold); padding-left:10px; font-style:italic; font-family:Georgia,serif; font-size:14px}
+.przyg{opacity:.25; pointer-events:auto}
+/* HISTORIA */
+.hist{margin-left:118px; border-left:2px solid var(--line); padding:8px 0}
+.hist-ev{position:relative; margin:0 0 14px 28px; padding:10px 14px; background:var(--panel); border:1px solid var(--line); border-radius:8px}
+.hist-ev::before{content:''; position:absolute; left:-34px; top:16px; width:10px; height:10px; border-radius:50%; background:var(--gold); border:2px solid var(--bg)}
+.hist-ev .data{position:absolute; left:-146px; top:10px; width:100px; text-align:right; font:600 13px 'Segoe UI',sans-serif; color:#7fb3c8}
+.hist-ev a{color:var(--gold); font:12px 'Segoe UI',sans-serif; text-decoration:none}
+.hist-ev a:hover{text-decoration:underline}
+/* WĄTKI / MUZYKA / REFERENCJE */
+.karty{display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:14px}
+.karta{background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:14px 16px; border-top:3px solid var(--kolor,var(--line))}
+.karta b{font-size:14.5px}
+.karta p{font:13.5px 'Segoe UI',sans-serif; color:#cfd4db; margin-top:8px}
+.karta .sc-linki{margin-top:10px; display:flex; gap:5px; flex-wrap:wrap}
+.karta .sc-linki a{font:11.5px 'Segoe UI',sans-serif; color:var(--tx2); border:1px solid var(--line); border-radius:4px; padding:2px 7px; text-decoration:none}
+.karta .sc-linki a:hover{color:var(--gold); border-color:var(--gold)}
+.status{font:600 10.5px 'Segoe UI',sans-serif; letter-spacing:1px; padding:2px 8px; border-radius:4px; text-transform:uppercase; display:inline-block; margin-bottom:6px}
+.st-ok{background:#1d3a2a; color:#7fd6a0}.st-uwaga{background:#3a2f1d; color:#e0b356}.st-brak{background:#3a1d1d; color:#e08a7a}
+.id-tech{font:12px 'Consolas','Menlo',monospace; color:#9fb4cc; margin-top:8px; word-break:break-all; line-height:1.7}
+.muz-t{width:100%; border-collapse:collapse; font:13.5px 'Segoe UI',sans-serif}
+.muz-t td{border-bottom:1px solid var(--line); padding:10px 10px; vertical-align:top}
+.muz-t td:first-child{color:#b492d6; font-weight:600; white-space:nowrap}
+.muz-t td:nth-child(2){color:var(--tx2); white-space:nowrap}
+footer{margin-top:70px; padding-top:22px; border-top:1px solid var(--line); color:var(--tx2); font:12.5px 'Segoe UI',sans-serif; text-align:center; line-height:1.9}
+@media (max-width:900px){ #lanes{display:none} }
+@media (max-width:760px){ .hist{margin-left:8px} .hist-ev .data{position:static; width:auto; text-align:left; margin-bottom:6px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>KOŚCIUSZKO · FREEDOM</h1>
+  <div class="sub">Baza produkcyjna — oś czasu filmu</div>
+  <div class="meta">16 scen · 40 sekwencji Seedance · 12 postaci · cue M1–M10 · 1776–1798 · wg scenariusza „Freedom" pl v2 + kanonów Saratogi i Jeffersona</div>
+</header>
+<nav>
+  <a href="#obsada">Obsada</a><a href="#os">Oś czasu filmu</a><a href="#historia">Historia</a><a href="#watki">Wątki</a><a href="#muzyka">Muzyka</a><a href="#referencje">Referencje AI</a>
+</nav>
+
+<h2 class="sekcja" id="obsada">Obsada</h2>
+<div class="sekcja-sub">Kliknij postać, żeby podświetlić jej sceny na osi czasu. Portrety = kanon recastingu z Higgsfield.</div>
+<div class="obsada" id="obsada-grid"></div>
+<div id="filtr-info"></div>
+
+<h2 class="sekcja" id="os">Oś czasu filmu · 0:00–10:00</h2>
+<div class="sekcja-sub">Pionowe linie po lewej = bohaterowie (kolory jak w obsadzie). Kropka = postać jest w scenie; pozioma nić = kto z kim dzieli scenę; linia przerywana = przerwa w obecności. Kliknij portret nad torem albo kropkę, żeby podświetlić drogę postaci.</div>
+<div id="os-czasu"></div>
+
+<h2 class="sekcja" id="historia">Oś czasu historyczna · 1746–1817</h2>
+<div class="sekcja-sub">Fakty zweryfikowane w źródłach (Davies, Rostworowski, Journals of Congress, testament).</div>
+<div class="hist" id="hist"></div>
+
+<h2 class="sekcja" id="watki">Wątki</h2>
+<div class="sekcja-sub">Osiem nici, które przeplatają film. Kolory wątków wracają jako etykiety przy scenach.</div>
+<div class="karty" id="watki-grid"></div>
+
+<h2 class="sekcja" id="muzyka">Muzyka · koncepcja „Płomień"</h2>
+<div class="sekcja-sub">Hybryda Zimmer + koloryt epoki · d-moll → D-DUR · fraza wiolonczeli urwana w 0:45, dokończona w 9:45 · pełne tutti tylko w M10 · braam max 2× · chór tylko wordless · trzy ciszy strukturalne: ~1:30, 6:00, ~9:14.</div>
+<table class="muz-t"><tbody id="muz-body"></tbody></table>
+
+<h2 class="sekcja" id="referencje">Referencje AI · Higgsfield</h2>
+<div class="sekcja-sub">Statusy previzów, referencji twarzy i scenografii — z ID do wklejenia w generacje.</div>
+<div class="karty" id="ref-grid"></div>
+
+<footer>
+  Dokumenty źródłowe w folderze projektu: scenariusz pl v2 (+ PL_EN, dialogi_EN, Gates rozbudowany = kanon Saratogi) · Prompty Seedance 15 s · Biblia techniczna v1.0 · Biblia muzyczna · SEQ 9 animacja/mocap · Brief castingowy · koszty JD Media · skany Davies / Rostworowski / testament.<br>
+  Look: ARRI ALEXA 65 + vintage Panavision · Kodak Vision3 16 mm (250D/500T) · 24 fps · 16:9 UHD · LUT Kodak 2383 · ziarno i halacja jedną warstwą w poście · światło wyłącznie motywowane.
+</footer>
+</div>
+
+<script>
+const PORTRETY = {
+k_mlody: "data:image/jpeg;base64,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",
+k_starszy: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHCAkIBgoJCAkMCwoMDxoRDw4ODx8WGBMaJSEnJiQhJCMpLjsyKSw4LCMkM0Y0OD0/QkNCKDFITUhATTtBQj//2wBDAQsMDA8NDx4RER4/KiQqPz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz//wAARCABIAEgDASIAAhEBAxEB/8QAGwAAAgMBAQEAAAAAAAAAAAAAAAUCBAYDAQf/xAAxEAABBAEBBQcDAwUAAAAAAAABAAIDEQQhBRIxQVEGEyIjYXGBMqGxFFKRJELB4fD/xAAYAQADAQEAAAAAAAAAAAAAAAAAAQMCBP/EABwRAAICAwEBAAAAAAAAAAAAAAABAhESITEDQf/aAAwDAQACEQMRAD8A+cQnxFdYtcs+yowy6myrEUvnXai0UTGbVqOz2zYcvAnyM1veRsIELLrXmVk4nbwWk2Vtduz9kFj4O+DpKFPot0F6UpO/hWNXsNqbOxHvI3XNjaNBdLIZ2M1r3CMkNBoWbWr2ttOCHHa97BI99boutP8AKzGTOJXaxmP03rpHm5dKTUOCWRhY4i1PEd4y32P3UslhEo6Fd8eBgmYNQXDiNV05Kjkxdl826HJLCQxu7p8oVjJxn4kWdFIAC3d1Bu9ULMNofppmbbI7eoALu19OBVceF5pdm61pa0zKGOLMK1I/lbPsmYcnZ2diuLQ9zmu3uYCw0MB3QXNDb4XzTzszlMw9sxBzfLlaWP168B+FCcbWi/m6ey92vgZHtWGGPWPFjaGu59bKo54hDBM8CR5GiZdp445s12QcOWN7aN1QqvdZ7IkMmOx1bosilhcR0cF8hDnhzuAKqvyPOD4xTWfSrhjM0gij4n7dSqEzQ2eQN4BxAXRCjj9GxkcySSItLyQ4AOB50hLQ4gcUJ41wWSfSJPiJTbBiEMLppWgSFpLAeWnFVtn4wkkM0rbiZfh/cRrS7ZWQJDYddir9uB/IQ96Ba2eF57zHDdfLFfKsQu3Wzyh1Bjd1p9eqXte5ro6FkRgC+Si/IlfCGUGxsOoH9yKsMqNlLtDG2ts+B3mOyhEO8jYSaPWuh6pDm42S15b+mkjA4NcKKrbCycjD23D3DTI8v7osBrea7Sluc+FrMZ7zPJKxrC9tuB+L6XShJYPRZSzWzFxRPxcaSZ/1kUAk9E2Smm1852S8sZH3LAaDOh/0lRed7dbwGivBOrZCbVkuSENJNtrVC2ZG0s8cUbseKLdjuxZ59UrleS49V3yjIyQtlFEciqj3XypKKHJluIh0zL/aPwoyERsDavWyowO8xp9F5L4pD6lL6HwnBkSY2cZYSGyseHsceRGq10EsTido77zjDGdM2EPIa2S6La9HHh8rGuFZZB6Uf4VhuXNFhzQA0x9CvyfsFmUcjUZUcszIORmPk00JNgcSq8bbcF6weF3spxfVfIKnEY6SOk3uELybQ2hIdj9uKzMiME+6JQNHf9y/HskWVhvxMt8Mt+E6WKJ+EIU4t3RuaVWc4jT3eikNXgIQqE0RkP8AUu9CpSeKkIQB4KquqLprQOKEIAJjaEITQmf/2Q==",
+gates: "data:image/jpeg;base64,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",
+oficer: "data:image/jpeg;base64,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",
+sekretarz: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHCAkIBgoJCAkMCwoMDxoRDw4ODx8WGBMaJSEnJiQhJCMpLjsyKSw4LCMkM0Y0OD0/QkNCKDFITUhATTtBQj//2wBDAQsMDA8NDx4RER4/KiQqPz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz//wAARCABIAEgDASIAAhEBAxEB/8QAGwAAAgIDAQAAAAAAAAAAAAAABQYABAIDBwH/xAA5EAABAwIEAwQHBQkAAAAAAAABAAIDBBEFBhIhMUGxEyJhgRUjMmNyc9EUJnGRoSU1NkJDUVOSwf/EABgBAAMBAQAAAAAAAAAAAAAAAAACAwEE/8QAHREBAQADAQEAAwAAAAAAAAAAAAECAxExIRMyQv/aAAwDAQACEQMRAD8Accgstgh+c7qkvRbMcvzJOqdsi39CG3+Z/VKIb945Pjl6rlv6xee1c0XWqSPbgrumyF5nq58LgEFIA2qe0F0jt9F+Q8bJeGYyxOse6fyVGRmxVDC6isgqx2tW6SQ7uuL3TBiUI0sqGM0xzAkbWuRxWGuNgDp7/mrsLeCr6fWeauRDggq3Gy7VFvp291RANORf3IfnP6pWDfvE/wCOXqmTIrycJc0cBK7ql0b5jd8UvVP/ADCz2ijGgysB4Fwv+aTMSnkxPG6pliBDNY6+LRva3iSOiZccNc3CZzhZY2rABY55ADd9zvtwulqjjq63AKrFq2Isq3yOa4NFgS02Jty3Rz500s7yhBrHRVgkbFYawO8eXMpwNRNLgMMVRAYiyZ4jJN9TRzSQGtmq2hr339qzG3358duKd6h5fhtGHCRrmx7h43vt9EqmX2BJHrFaiCrf1FciG6xMSpR3VFspB3VFsA3kUfshx967ql5v8Ru+OXqmHI1/RLh75y5/nDFZsLnkNI/RUPkkAfza2+9vFNJ2SE7y2r+csbpqDCqik1a6mdmgMH8oPMlIODY/VUs0sE0rjBUOu8O3AcefnzQeeeSeV0kz3Pc47lxuStLr2tzXRMJJxK53vXTsFw6KonjiBY2Ycnmx2PEInUV8GINBp36mwXidcWIcCbgjkueYLmCupJWyM0zuibpLHjfR4HiiE2I2zj9shkLaeua17mjgTpFwfFSutX8nTGR6xW4jYKq4esViNROM0R7nkovKL2PJRbGDuSBbCHfOcuL53qXTZjxDUdo5nRtHgCbrs+SSfRTh753/ABcKzVIJMw4g4cDUSW/2Kvq8S2A3I/gvb3C8Ps38Fi07KqTbE8wzslabWIuf7IvNGRRSyta7tKeZr224aSN/1CCjdhCYcPvPEWagO2pe94lpv9VlNDVRzCopYZQ7VqaLlXoyl3K8pfhXZnjDIWfRHmOXLlOV0Y3sG6E93yUWqgfcKIgMGTi6HD3slBY/tXENdsVwDFX66+eRx3dI4/qVFFbV4ls9UnXLbBYNPFRRWSZMOxCO4XKI6emke0ERScNtwTY9VFEtNj6vsp6aDHa2kq7hshEsQa8gbjht+CNYWHR4bA1znOOm93G6iijsWwH8Oeoookhn/9k=",
+ranny: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHCAkIBgoJCAkMCwoMDxoRDw4ODx8WGBMaJSEnJiQhJCMpLjsyKSw4LCMkM0Y0OD0/QkNCKDFITUhATTtBQj//2wBDAQsMDA8NDx4RER4/KiQqPz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz//wAARCABIAEgDASIAAhEBAxEB/8QAGwAAAQUBAQAAAAAAAAAAAAAAAAEDBAUGAgf/xAAzEAACAQMCAwYFAwQDAAAAAAABAgMABBEFEiExQQYTIlFhcRQygZGhFSMzQnKx0VJiwf/EABgBAAMBAQAAAAAAAAAAAAAAAAEDBAAC/8QAHxEAAwEAAwEAAwEAAAAAAAAAAAECEQMSITEEEyIy/9oADAMBAAIRAxEAPwDyLZS92aUFl4njUmNWY8UyD0FLbw6mdITDGK725UYFOvEe8CBSPLIokBSPJHI1t03XBoRtjO049qQErnBp+Ift5yc4zXLeLjz+lHTnBotnmAa5wD5iumwB/qkVdw4GiAApPQminRK3AAAUVjYItXOj2yzXcaOeBNUxJPTFTrG9FsDlCX6NnlS+SXUtIdxXM1rNxrPZWG30oX8NwCFmRNmc53A8fxWJ1mAW00kXPD4+1WT61dXFoYXbcC6sCTyxnh+artUfvLfe5G/fnNTcEckvLKfyOTjuX0Lbsn2bk12WSNJO7SNAztjJAPLHqam6b2Zs3nkt5b+4trokhI5IhhvTnzq+7BiSDTUjtHWN2bFycZYnHhHHlzz9ac1i4mh+Ovmi+GEEiAyt4hKx4cBTuwuYnHp5/ruizWPeyyd2mwgHbwD54ZX7cRVGOBrTdqNWluIIbRtmSTI2B8oJG0fjP1rM0+fhLeKvCXGsO0Fm4+9FNRDK0UDIO7XON4+hrpIlyN0gA9GptE48quINNjktTI5CgDPHyrmqw7jjdaydovZm51qdY9OlKoP5JnJ2L6e/pWj0/s1ZW2rm2mle6nhQuIpogquRzI4knHkaxsl06WsIj3LEo8CA4x6+9W2hdq5Y9QiOpSl9pCpcN8yDpk9R0z98ijUPDRc76bTS5YNPkkilGwzuZFbkDtOG/wAA+xqn7Sa3EWkt9ytFnPgYOszHjj0+lSu2+x9BNzbxkksHVoyP22PAn+01hdTNvHpEMa2zLOz/AMpcZyOeaWp9G/sxeFPcTy3V1JPOxaSRizMfOm+tW9zYG9eKe0A3yRK0qnhhuIJHoSKY/SbpGI2hiBxANO7JE3VsXTZrWNCJ03E+maKSGwwv70gibOCGFFc+BWhFGWl2jy8+dWOoz9zpSRKf5SB9KZjgzMuOOW2nHQedQ9VnEt4FX5I8AUuF2elHI+kuRLhsgBOSnhUa1XvLqOMf1SAfmnpsAnJ49K70kJ+qRl8gDljnnpVV+Ijj1m3S4VtLksZVJgETHB6LkcPz/isnqYD2SSlcNlyMnl4zV1dT9zdmAbjtgXPI4yc9KzmrXHepAAMAqzD2LtUcJ6VW1hKiuvh4rS6Q8Iztb+1h/sGr68uWdRJbxRO+cO6tt7wY54PI1lrZu90yWLqgz9jkf+0/hktY2k8aIvhIPBl6H3B4Ee1Ocp/RSpmg1K1aWw+IZYVhLBZCDv7vP/IjlRVZb6y3wMltK3cwsviWKIM0p/7E0VksC3oTFbUXbBiVDlYznyznFUIUv4m/qJP0FFFDhX8oPO/6ZNuFIVO74kjO4Co9s/w10kwGdp4gnnRRVFJNE8vGPSTTStJIzSh5jleGAR7+VcyW0s628cah5ExHhWBDZORj74ooqf8Ay/B31Gil7KvY2qSrchrk/NGMBcdfU1WafMkFy1rcrutZch16gcjj1HOiihFOvp1UqfhAvYmt7x7diCYnIJHI460UUUw4P//Z",
+jefferson: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHCAkIBgoJCAkMCwoMDxoRDw4ODx8WGBMaJSEnJiQhJCMpLjsyKSw4LCMkM0Y0OD0/QkNCKDFITUhATTtBQj//2wBDAQsMDA8NDx4RER4/KiQqPz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz//wAARCABIAEgDASIAAhEBAxEB/8QAGwAAAwEBAQEBAAAAAAAAAAAAAAQFBgMHAgH/xAAtEAACAQMDAgUEAgMBAAAAAAABAgMABBEFEiExQQYTFFFhIjJxkSOBocHR4f/EABkBAQEBAQEBAAAAAAAAAAAAAAMEBQIAAf/EACARAAMAAwACAwEBAAAAAAAAAAABAgMRITEyBCIzQRL/2gAMAwEAAhEDEQA/APOtUb61X2qaxwOadvctdtml2jB7UMeBr22xaN8Ma7I/UUC33N9NDQMvPXFd8D6itoqLPfICMBeprbYWNBtasr4ZtLmR2ljjIX3IrUK+FKyLyKjzdotw+pYs5mn0eeMnIi5BHzWbbR764gMkULFTzvY7Qa2WkCODTIiuAZMufnP/AJXW/ukS2wGGTQy9NlDnaR5jdadf22VJTB+7BPNFXb6USSMzEbev5opVbOHikyF7AWbzEGfek8cU3dXQjjOD1qQlw3mnJzmnhPRJVJMeVMJuzTelW/qtSghYZVnGfxSHmDbzxVPQ7tbbVreTqNwB/uvNtJnUqW0enXkMNlp6RQKqMR2FQJJcEqF3dvmuusTXPrVnBJi2cD5qVbah6a8juJE3hX3FcZqBNtmpMypN+IY1jghVgAihW/oVO1WaIfxqQRj6j8VEm18TzXIXaZAu4ohyCPcfvms4PEdzLcPGkUWTgYJA6fJpIlsCqmf6N6jMHLFRgZ4oqTdarIx2Swgfg5op1DBeRbM7u3qQxr9SMFxiuIpi2xzVT4jPnrOrJnao71V0XTmnuywPEfPFIbCSAOvathoNjJaW/mN9z1Lnv/McLMEJ30auL6QRrBMAe3FJXEahS4HNUJbdTKZG6+1I3I3yxwqwBkYLz2ycVBK6aDfGdnkgtPDTahIg9ZNvgh4528bj/r91mdHtkku2EqCQOhyCucfNWvFd3DJdR2Fq6CC1QRoT29z+6m6FcJb61GkjqysCAw9/arpWpJa06SZ8zaNG0gS3A9htJOT+aKratdCJyIZAq5wSRz+M0V5VR8eON9MCKZtRl6VpyxHJquvBnx7FKwAfUoEboW5r0VVXygF6AVg/DsXqNXyRlUrZXW9V/jbA71l/Jf3SNb40/RsVvp1jBEX1v8dqmmMkCSX7803DEIpmJO7d3r5nUDvXEv8Ah3S5sTXSotSW93R5uNqssmTkc8n5qbYactrIssp3MPsGelX7Py0lbzFZ1kjZSqHBbI4wfzUS6gWK42q90oAyu8j/AJVWOm9rYFQvbRy1SQSTEL3GRn/NFfMhiFoz7t0ofOfaimnwDT70zANPWZwrn4oop68EWP2NR4KTc0svzWmnPBoorHz/AKs2/j/iiLJKYLgt1U0tqFztAZTwaKKaJTaCumkz9ttWiW+tFwAolTzHbsMjOKa8SXkHrHDxguQScdOaKKprHM1KRPGWqmmzIXFypXbGDRRRTpEjptn/2Q==",
+sluzacy: "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAoHCAkIBgoJCAkMCwoMDxoRDw4ODx8WGBMaJSEnJiQhJCMpLjsyKSw4LCMkM0Y0OD0/QkNCKDFITUhATTtBQj//2wBDAQsMDA8NDx4RER4/KiQqPz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz8/Pz//wAARCABIAEgDASIAAhEBAxEB/8QAGgAAAwEBAQEAAAAAAAAAAAAAAAQFAwIGAf/EADAQAAIBAwIEBAUDBQAAAAAAAAECAwAEERIhBSJBURMxYXEGFDIzQoGhsSMkkcHR/8QAGAEBAQEBAQAAAAAAAAAAAAAAAwIEAQD/xAAeEQADAAICAwEAAAAAAAAAAAAAAQIRMQMhEiJBcf/aAAwDAQACEQMRAD8A8q3lWTCtulZNWI2Ey/8AvN+lLD6DTN999vYVPkuVQFVGT+1JKyHTwaY5TXDVh80++w3rpbhSOYYNJhkeSNAOY0zEOWlxgtkdqaj8qllI+IOY0V0nm3tRUnUXOlYsdzXTthKxZsDJ2HrRiEnispWUqPMgb1KO+TVO6tZbhvGjAIYnr5V1Hwhxbs88ixnIwo3Jp4qUgbim9EgHGaM1tdReBKUDagOtYUq7CawNWkmW0E522qjH9JqTaH+5X9arRfSaK9iRo7iG7e1FaW45j7UUbEQ9cHRGW7VG4m7SwKW20t0p65vwEKGJtx03qbPdtLbOhi5e9dlPZ6mj1vwvZ29xw6VGUty5B7ZqRxGN4JZFJJAPak+E3txbTWjRzlFYhGCnfTmnp4Z7u7ntHkzM0hMcjsc47evSh8XPI230alSvjSWzzsyO7FsVgqEknGcdKqX1p8i/hSSa5B9RHlU5XAkJHlmtc1ldGK5w+zp0aOVXxpIGSAMYNWIF1pk9etT4SbidFc51uAaq2q6II/Vai2VK7OBb3SsTE0R2/I4opnUdQ3xg0UeWX4oiyy6VYK4x0AFLKQSAScdax8V6Z4ehub2GAgYdwD7dafHisgL2eCpwu3dGjmmVQICGVcbnsDTN7Nei7iuZrVWhicsAjZ39T59q3VSApbctcNqHt5UkbubTdwl5dJGthnC7d6y5dPJsSUrBL4neG5uXkZNDE7iklBY7A081lLODKAunbZd9j5UriSCQrkrWqcJYRlpN1miv8P2rScUjyurw45JCPZDWcvEWhliijXUqrl19ao8EljtLG7uZXf5meFo49K7In5MT32wKiWaeNK8hG7ZwKJPLbfwtrCSX0rW92kyMRDJsO1FCKLeyXozmio3oTWzzdWvhqHXdyy4yY02HXc/8BoopeZ442FwLPIipeaolnlUgrr1qR6jB/isb6NEsnuFH3oVA9+tFFZZ+Gulv8JpiYWlu8TMHiPNg4IBP8V6LjXAy3AI70r/VtgC5x9SMcH/B/Y0UVd001+hwk0/wTv5FT4UtIYlAaYZY+7H/AEKS4dCoPJuqjGfWiiqfUsld2g4qxSOFD+OaKKKSF6hcj9mf/9k=",
+};
+
+const WATKI = {
+ wolnosc:{n:'„Wszyscy ludzie stworzeni są równymi"', k:'var(--w-wolnosc)', opis:'Główna oś ideowa. Słowa Deklaracji trafiają Kościuszkę w porcie „jak rana i obietnica" (SC. 7), wracają w gabinecie ich autora (SC. 14: „Przeczytałem twoje, zanim cię poznałem... A ja w nie uwierzyłem. Dosłownie.") i spełniają się w testamencie (SC. 15). Muzycznie: Temat Wolności „All Men" — rodzi się przy Deklaracji, zdeformowany w molu u Jeffersona, oczyszczony w finale.', sceny:[7,14,15,16]},
+ niewolnictwo:{n:'Sumienie i niewolnictwo', k:'var(--w-niewolnictwo)', opis:'Zniewolony służący w gabinecie (SC. 14) jako żywe zaprzeczenie Deklaracji; konfrontacja z Jeffersonem; testament jako odpowiedź czynem (SC. 15). Wolny Hull (SC. 12) — cichy kontrapunkt. Muzycznie: Motyw Sumienia — harmonika szklana + zegar.', sceny:[12,14,15]},
+ testament:{n:'Testament — klamra filmu', k:'var(--w-testament)', opis:'Zasiany w rozmowie z Jeffersonem (SC. 14: „Napiszesz to ze mną?" / „Pomogę Ci."), spisany w SC. 15, wybrzmiewa w kartach końcowych. Historycznie: 5 V 1798, Jefferson współautor i wykonawca. W odrzuconej wersji v3 testament był ramą całego filmu.', sceny:[14,15,16]},
+ inzynier:{n:'Inżynier, nie wojownik', k:'var(--w-inzynier)', opis:'Kościuszko wygrywa wiedzą i terenem, nie szablą: szkic fortu (SC. 2), egzamin u Franklina (SC. 8), Billingsport (SC. 10), wybór Bemis Heights i korekta dział (SC. 11), bateria niżej (SC. 12), tratwy odwrotu (SC. 13). Zasada: koryguje ustawienie dział zamiast komendy „ognia".', sceny:[2,8,10,11,12,13]},
+ zycie:{n:'Wartość życia żołnierza', k:'var(--w-zycie)', opis:'Credo: „Inni budują dla chwały. Ja — żeby ludzie wrócili żywi do domu." (SC. 12). Czyny: pomaga innym do szalupy i wchodzi ostatni (SC. 5–6), oddaje koc rannemu (SC. 13). „Jak długo utrzymają się te wały?" / „Tak długo, jak ludzie za nimi."', sceny:[5,12,13]},
+ plomien:{n:'Motyw płomienia', k:'var(--w-plomien)', opis:'Tytułowy „Płomień Wolności": świt na oceanie (SC. 1) → świece u Jeffersona (SC. 14) → jedna świeca testamentu, płomień odbity w oczach (SC. 15) → światło wypełniające kadr (SC. 16). Muzyka: d-moll → D-DUR; temat Kościuszki rośnie przez cały film. Halacja najmocniejsza w SC. 14–15.', sceny:[1,14,15,16]},
+ pokora:{n:'Pokora i skromność', k:'var(--w-pokora)', opis:'„Ziemia to zrobiła. Ja tylko to wykorzystałem." (SC. 11); nominacja bez triumfu (SC. 9); nie wiwatuje po kapitulacji — stoi w opadającym popiele; nie pcha się do szalupy pierwszy (SC. 5).', sceny:[5,9,11]},
+ ocean:{n:'Ocean — przeprawa po wolność', k:'var(--w-ocean)', opis:'Akt I (SC. 1–6) jako rytuał przejścia: świt → burza → rozbicie (historycznie u Martyniki) → ratunek → nowy świat. Klamra w epilogu: „Przepłynąłem ocean dla cudzej wolności. Ale wolność nigdy nie jest cudza."', sceny:[1,3,4,6,16]},
+};
+
+const POSTACIE = {
+ k_mlody:{n:'Kościuszko (młody)', sc:'SC. 1–13, 16', foto:'k_mlody', opis:'~30 lat, harcap z czarną wstążką, oczy grey-green. Kostiumy: podróżny (sc. 1–7, 16) / mundur pułkownika (sc. 8–13).'},
+ k_starszy:{n:'Kościuszko (1797–98)', sc:'SC. 14–15', foto:'k_starszy', opis:'Ta sama twarz postarzona do ~52 lat (ref. młodego + prompt „AGED to 52"), siwiejący harcap, strój cywilny.'},
+ franklin:{n:'Benjamin Franklin', sc:'SC. 8', foto:null, mono:'BF', opis:'~70 lat, łysiejący, długie siwe włosy, okrągłe okulary, bordowy skromny garnitur. Egzaminuje i rekomenduje.'},
+ jefferson:{n:'Thomas Jefferson', sc:'SC. 14', foto:'jefferson', opis:'~54 lata, pudrowana peruka z lokami, granatowy frak. Autor słów Deklaracji — i właściciel niewolników. „Pomogę Ci."'},
+ gates:{n:'Gen. Horatio Gates', sc:'SC. 11', foto:'gates', opis:'~50 lat, tęgi, małe okrągłe okulary nisko na nosie, kwaśny wyraz; bez epoletów z frędzlami. Dowódca pod Saratogą.'},
+ hull:{n:'Agrippa Hull', sc:'SC. 12', foto:null, mono:'AH', opis:'Wolny czarnoskóry żołnierz, ordynans i przyjaciel; duże wyraziste oczy, kurtka z cynowymi guzikami. Słyszy credo.'},
+ greene:{n:'Gen. Nathanael Greene', sc:'SC. 13', foto:null, mono:'NG', opis:'Obsadzony starzej (~50); srebrno-siwe włosy, mundur zadbany, złote epolety. Kiwa głową przy scenie z kocem.'},
+ oficer_fr:{n:'Oficer francuski', sc:'SC. 2, 4', foto:'oficer', opis:'40–45 lat, krótkie włosy bez harcapa, lekki zarost, granat + karmazyn, przetarty solą. Kwestie po francusku.'},
+ sekretarz:{n:'Sekretarz Kongresu', sc:'SC. 9', foto:'sekretarz', opis:'55–60 lat, pełna broda + podkręcany wąs (świadomie ahistoryczne), okrągłe okulary. Czyta uchwałę 18 X 1776.'},
+ zolnierz_bill:{n:'Żołnierz z Billingsport', sc:'SC. 10', foto:null, mono:'ŻB', opis:'Milicjant-robotnik 20–24, filcowy kapelusz, łopata, bez munduru. „Z tego ma powstać twierdza?"'},
+ ranny:{n:'Ranny młody żołnierz', sc:'SC. 13', foto:'ranny', opis:'15–17 lat, zakrwawiony bandaż + temblak, cynowe guziki. Dwa warianty: bez koca / z kocem (koc „wędruje"). Mocap.'},
+ sluzacy:{n:'Zniewolony służący', sc:'SC. 14', foto:'sluzacy', opis:'~35 lat, spuszczone oczy, orzechowo-brązowy surdut. Jego przejście uruchamia konfrontację o wolność.'},
+};
+
+const AKTY = [
+ {przed:1, t:'AKT I · OCEAN', s:'0:00–2:30 · zimne błękity i stal → pierwsze złoto nadziei · M1–M3'},
+ {przed:7, t:'AKT II · FILADELFIA I WOJNA', s:'2:30–7:45 · zakurzona sepia miasta → błoto i dym bitwy → złota godzina · M3–M8'},
+ {przed:14, t:'AKT III · SUMIENIE I TESTAMENT', s:'7:45–10:00 · bursztyn świec i głęboki cień → czyste złote światło świtu · M9–M10'},
+];
+
+const SCENY = [
+ {nr:1, t:'Ocean Atlantycki — świt', lok:'Ocean Atlantycki', rok:'1776', tc:'0:00–0:15', kolor:'var(--w-ocean)', chars:[], watki:['plomien','ocean'], cue:'M1',
+  opis:'Ciemna tafla rozjaśnia się; samotny żaglowiec pod pełnymi żaglami. Otwarcie (storyboard): lot nad chmurami → zejście nad taflę → krople na obiektywie → żaglowiec; tytuł FREEDOM w poście.',
+  seq:'SEQ 01', muz:'M1 „Ocean" (68 BPM, d-moll) — ostinato low strings; fraza wiolonczeli URWANA w 0:45, dokończona w 9:45.'},
+ {nr:2, t:'Pokład statku — świt', lok:'Pokład żaglowca', rok:'1776', tc:'0:15–1:00', kolor:'var(--w-ocean)', chars:['k_mlody','oficer_fr'], watki:['inzynier'], cue:'M1',
+  opis:'Życie pokładu; Kościuszko w ciemnym płaszczu podróżnym — „człowiek, który wie, że płynie ku czemuś większemu od siebie". Na rufie: szkic fortu; wiatr porywa róg kartki.',
+  dial:'OFICER (FR): „Monsieur Kościuszko! Regardez — la mer se réveille." / K.: „Oui... elle se réveille."', seq:'SEQ 02–04', ref:'Mapa fortu (1F): job be8e66f7.'},
+ {nr:3, t:'Wody Karaibów — burza', lok:'Wody Karaibów', rok:'1776', tc:'1:00–1:15', kolor:'var(--w-ocean)', chars:[], watki:['ocean'], cue:'M2',
+  opis:'Niebo pęka błyskawicą; front burzowy pożera gwiazdy; statek malutki i kruchy. Braam nr 1 z dwóch dozwolonych — przy rafie.',
+  seq:'SEQ 05', muz:'M2 „Sztorm" (~140 BPM). Cisza strukturalna nr 1: ~1:30 (rafa).'},
+ {nr:4, t:'Pokład — noc, rafa', lok:'Pokład żaglowca', rok:'1776', tc:'1:15–1:45', kolor:'var(--w-ocean)', chars:['oficer_fr'], watki:['ocean'], cue:'M2',
+  opis:'Ściana wody, pękająca lina, kadłub trafia w rafę — historycznie u wybrzeży MARTYNIKI. Maszt pęka z jękiem.',
+  dial:'OFICER (FR, krzycząc): „Amenez les voiles! Vite!"', seq:'SEQ 06–07'},
+ {nr:5, t:'Szalupa — noc', lok:'Wody Karaibów', rok:'1776', tc:'1:45–2:15', kolor:'var(--w-ocean)', chars:['k_mlody'], watki:['zycie','pokora'], cue:'M2',
+  opis:'Za mała szalupa, za późno. Kościuszko pomaga wsiadać INNYM — nie pcha się pierwszy; wciąga zsuwającego się człowieka. Pierwszy czyn charakteryzujący bohatera.',
+  dial:'K.: „Trzymaj się! Dawaj rękę!" (w promptach EN: „Hold on! Give me your hand!")', seq:'SEQ 08–09'},
+ {nr:6, t:'Morze — świt, ratunek', lok:'Wody Karaibów', rok:'1776', tc:'2:15–2:30', kolor:'var(--w-ocean)', chars:['k_mlody'], watki:['ocean'], cue:'M3',
+  opis:'Burza odchodzi; karaibska mgła; obcy statek dostrzega rozbitków. Kościuszko wchodzi na pokład OSTATNI i pomaga słabszym (poprawka 2G v3).',
+  dial:'GŁOS Z POKŁADU (FR): „Là! Des survivants!"', seq:'SEQ 10'},
+ {nr:7, t:'Port w Filadelfii — Deklaracja', lok:'Port w Filadelfii', rok:'1776 (sierpień)', tc:'2:30–3:15', kolor:'var(--w-wolnosc)', chars:['k_mlody'], watki:['wolnosc'], cue:'M3',
+  opis:'Las masztów, gwar nowego świata. Obcy bez nazwiska — „ma tylko wiedzę". Na słupie druk: Deklaracja Niepodległości. Gwar portu przygasa. Narodziny Tematu Wolności.',
+  dial:'K. (szeptem): „...wszyscy ludzie stworzeni są równymi..." — słowa „jak rana i obietnica jednocześnie".', seq:'SEQ 11–13'},
+ {nr:8, t:'Drukarnia Franklina — egzamin', lok:'Drukarnia Franklina', rok:'1776', tc:'3:15–4:15', kolor:'var(--w-inzynier)', chars:['k_mlody','franklin'], watki:['inzynier'], cue:'M4',
+  opis:'„Proszę — niech mnie pan sprawdzi." Egzamin z geometrii przy oknie Vermeera; rekomendacja, piasek na świeży atrament. Historycznie: drukarnia Franklina, nie „sklep Jeffersona".',
+  dial:'K.: „Wojna potrzebuje mostów, szańców i ludzi, którzy potrafią liczyć odległość szybciej, niż wróg potrafi strzelać." / FRANKLIN: „Imponująco. Kongres powinien pana poznać."',
+  seq:'SEQ 14–17', muz:'M4 — jedyne miejsce z klawesynem.', ref:'Wnętrze drukarni (4A): job 39e3b1bc · fasada „B. FRANKLIN — PRINTER & STATIONER": job bbcce15d (jako referencja obrazkowa wywala filtr NSFW — używać opisu tekstowego).'},
+ {nr:9, t:'Pennsylvania State House — nominacja', lok:'Pennsylvania State House', rok:'18 X 1776', tc:'4:15–4:30', kolor:'var(--w-pokora)', chars:['k_mlody','sekretarz'], watki:['pokora'], cue:'M4',
+  opis:'Stuk pieczęci echem w sali. Uchwała Kongresu (Journals of Congress, 18 X 1776): „...pay of sixty dollars a month, and the rank of colonel of engineers." Kościuszko nie triumfuje — przyjmuje zadanie. Bez kapelusza. Podanie: 30 VIII 1776.',
+  dial:'SEKRETARZ: „Stopień pułkownika inżynierów. Witamy w Armii Kontynentalnej." (sesje EN: „Congratulations, Colonel." / K.: „I will not fail them.")',
+  seq:'SEQ 18', ref:'Sala Kongresu (5A v2): job f05c8798 · pieczęć lakowa „Colonel of Engineers" (5C v2): job 98fd3d60 · kostium tweed (kanon): job 9d7c1140.'},
+ {nr:10, t:'Fort Billingsport — budowa', lok:'Fort Billingsport (Delaware)', rok:'jesień 1776', tc:'4:30–5:00', kolor:'var(--w-inzynier)', chars:['k_mlody','zolnierz_bill'], watki:['inzynier'], cue:'M5',
+  opis:'Pierwsze zadanie inżynierskie: paliki, sznur mierniczy, błoto, zimny wiatr znad Delaware. Na końcu — pierwszy cichy uśmiech.',
+  dial:'K.: „Tu szaniec. Tu bateria. Rzeka będzie naszym murem." / ŻOŁNIERZ: „Z tego ma powstać twierdza?" / K.: „Twierdza zaczyna się tam, gdzie człowiek przestaje uciekać."',
+  seq:'SEQ 19–20', muz:'M5 (76 BPM, B-dur) — temat „pracy".'},
+ {nr:11, t:'Saratoga — bitwa', lok:'Bemis Heights / Saratoga', rok:'jesień 1777 · kapitulacja 17 X', tc:'5:00–6:15', kolor:'var(--w-inzynier)', chars:['k_mlody','gates'], watki:['inzynier','pokora'], cue:'M6',
+  opis:'KANON = rozbudowana wersja Marcina (Gates z mapą pękającą na zgięciach; wykład terenu: rzeka z prawej, wąwozy z lewej — Burgoyne tylko środkiem; spór o przesunięcie 2. baterii 30 jardów; montaż 10 dni deszczu → biały sztandar; epilog 17 X). Kościuszko koryguje DZIAŁA zamiast komendy „ognia". Braam nr 2: pierwsza salwa.',
+  dial:'GATES: „Mówią, że to pan zamienił to wzgórze w twierdzę." / K.: „Ziemia to zrobiła. Ja tylko to wykorzystałem." · „Jak długo utrzymają się te wały?" / „Tak długo, jak ludzie za nimi." · „Otworzy pan środek" / „Na trzy minuty" / „Albo ją wygrać" · K.: „Działo za wysoko! Obniżyć lufę — mierzyć w podstawę stoku!" · Epilog: „Tę bitwę wygrały wzgórza i lasy" / „Nie same, generale".',
+  seq:'SEQ 21–25', muz:'M6 (60→120 BPM), Rytm Wojny: werble + fife. CISZA 6:00–6:04 (kapitulacja). Chór wordless.',
+  ref:'Previz kanonu (9 ujęć, 14 VII): 8149f1ec, d4ff18d9, 0e0f9b80, 33e5a4a4, e0a6e3b6, 5f9b7410, 9251a3e2, e655fc67, 1cbaa2c1 · previz warsztatowy (5 ujęć): a0dd595c, 8b6871b2, 9c5c7c6a, eb6fcc65, 4c955a66 — timing 8×15 s DO REWIZJI pod kanon.'},
+ {nr:12, t:'West Point — mapa i cyrkiel', lok:'West Point (Hudson)', rok:'1778', tc:'6:15–7:00', kolor:'var(--w-zycie)', chars:['k_mlody','hull'], watki:['inzynier','zycie','niewolnictwo'], cue:'M7',
+  opis:'Złota godzina nad zakolem Hudsonu. Reduty: „Nie efektowne. Konieczne." Kościuszko z Hullem nad mapą — credo bohatera.',
+  dial:'K.: „Tu, Agrippa. Bateria stanie niżej, nie na szczycie." / HULL: „Inni chcieli wyżej, panie pułkowniku." / K.: „Inni budują dla chwały. Ja — żeby ludzie wrócili żywi do domu."',
+  seq:'SEQ 26–28', muz:'M7 (84 BPM, F-dur) — tematy Kościuszki i Wolności SPLECIONE.', ref:'Previz 7A–7D (soul_2, bez ref. twarzy): e954af1b, a5b16c9a, 15e43a5e, a2625a2e — 7B i 7C DO REGENERACJI z referencją Kościuszki.'},
+ {nr:13, t:'Karolina — koc', lok:'Obóz w Karolinie', rok:'1781', tc:'7:00–7:45', kolor:'var(--w-zycie)', chars:['k_mlody','ranny','greene'], watki:['zycie','inzynier'], cue:'M8',
+  opis:'Kampania Greene\'a; noc, deszcz bez litości, tratwy osłaniające odwrót. Kościuszko oddaje własny koc rannemu chłopcu; Greene patrzy i kiwa głową. REALIZACJA: sekwencja 9 (9A–9D) — shoty tradycyjne w studiu (biała cyklorama) → restyling nano_banana → Kling 3.0 Motion Control; ~65–70 s; polski lip-sync z transferu ruchu.',
+  dial:'RANNY: „Panie pułkowniku, nie trzeba..." / K.: „Ty potrzebujesz tego koca bardziej niż ja."',
+  seq:'SEQ 29–31 (= mocap 9A–9D)', muz:'M8 „Koc" (58 BPM) — JEDYNY fortepian w filmie; wariant tematu „serce".',
+  ref:'Klatki 9C: 9C-1 c948fb1e / 39127f80 · 9C-2 b33c2e54 / ae5fb61e · 9C-3 95974d3f / 4abe0fe8 · 9C-4 e51891e8 / 268441de. Następny krok: klipy mp4 → motion_control test 720p (najpierw 9C-3) → finały 1080p. Plan w Kosciuszko_SEQ9_animacja.docx.'},
+ {nr:14, t:'Gabinet Jeffersona — konfrontacja', lok:'Gabinet Jeffersona, Filadelfia', rok:'1797', tc:'7:45–8:45', kolor:'var(--w-niewolnictwo)', chars:['k_starszy','jefferson','sluzacy'], watki:['wolnosc','niewolnictwo','testament','plomien'], cue:'M9',
+  opis:'KANON = wersja rozbudowana: (1) ciepło przyjaźni, toast „za słowa"; (2) przejście służącego + konfrontacja; (3) „Urodziłem się w takim świecie. Wirginia tak jest zbudowana." / K. o Polsce „zbudowanej z władców i niewolników"; (4) ZASIANIE TESTAMENTU — „Człowiek, który umie czytać, drugi raz nie da się kupić." → „Napiszesz to ze mną?" / „Pomogę Ci."; (5) klamra: służący wraca, OBAJ na niego patrzą — po raz pierwszy naprawdę. Punkt cięcia dla wersji 7 min: po „Albo jest dla wszystkich, albo dla nikogo."',
+  dial:'JEFFERSON: „Tadeuszu?" / K.: „Walczyłem o tę wolność krwią, Thomasie." · „Czy ten człowiek, który właśnie wyszedł, też jest wolny?" / „To... sprawa skomplikowana, przyjacielu." / „Wolność nie jest skomplikowana. Albo jest dla wszystkich, albo dla nikogo."',
+  seq:'SEQ 32–35', muz:'M9 „Sumienie" (~60 BPM = tykanie zegara, e-moll zawieszony) — harmonika szklana (instrument FRANKLINA — klamra!). Temat Wolności zdeformowany w molu.',
+  ref:'Previz 9 ujęć (14 VII): 637f152b, 6dfd1daa, 1163d3f5 (kluczowe: trzy spojrzenia), 37023f5b, 264900f2, 3b125819, 23ae77c2, a5c9291a, 5e3faa49. Jefferson i służący BEZ referencji twarzy — do regeneracji po portrecie.'},
+ {nr:15, t:'Testament', lok:'Pokój Kościuszki', rok:'1798 · testament 5 V', tc:'8:45–9:30', kolor:'var(--w-testament)', chars:['k_starszy'], watki:['wolnosc','niewolnictwo','testament','plomien'], cue:'M10',
+  opis:'Jedna świeca — najgłębszy chiaroscuro i najmocniejsza halacja filmu. „To nie jest gest polityczny. To akt sumienia." Płomień odbity w oczach — ten sam ogień, który widział na oceanie 22 lata wcześniej. Nie ogień wojny — PŁOMIEŃ WOLNOŚCI.',
+  dial:'K. (V.O.): „Przeznaczam cały mój majątek w Ameryce na to, by wykupić ludzi z niewoli... dać im wolność w moim imieniu, nauczyć ich czytać i żyć jak ludzie wolni."',
+  seq:'SEQ 36–38', muz:'M10 startuje 8:45; fraza wiolonczeli z 0:45 DOKOŃCZONA w 9:45; cisza ~9:14 przed modulacją d-moll → D-DUR.'},
+ {nr:16, t:'Epilog — wzgórza o świcie', lok:'Amerykańskie wzgórza', rok:'rama: 1798 → 1776', tc:'9:30–10:00', kolor:'var(--w-plomien)', chars:['k_mlody'], watki:['wolnosc','testament','plomien','ocean'], cue:'M10',
+  opis:'Wschód słońca nad wzgórzami, których bronił; dawne wały porośnięte trawą. Pojawia się MŁODA sylwetka — taka jak na początku — i odchodzi w słońce; światło wypełnia kadr. Karty końcowe: Saratoga punktem zwrotnym; generał brygady; testament na pół wieku przed zniesieniem niewolnictwa; powstanie 1794.',
+  dial:'K. (V.O.): „Przepłynąłem ocean dla cudzej wolności." / „Ale wolność nigdy nie jest cudza."',
+  seq:'SEQ 39–40', muz:'M10 „Testament/Finał" — jedyne pełne TUTTI, D-DUR, chór wordless.'},
+];
+
+const HISTORIA = [
+ ['1746','Urodziny Tadeusza Kościuszki (Mereczowszczyzna).',null],
+ ['1776','Rejs przez Atlantyk; rozbicie statku u wybrzeży Martyniki.',4],
+ ['VIII 1776','Przybycie do Filadelfii; Deklaracja Niepodległości na słupie.',7],
+ ['30 VIII 1776','Podanie do Kongresu Kontynentalnego.',9],
+ ['18 X 1776','Uchwała Kongresu: pułkownik inżynierów, 60 dolarów miesięcznie.',9],
+ ['jesień 1776','Fort Billingsport nad Delaware — pierwsze zadanie.',10],
+ ['IX–X 1777','Saratoga: fortyfikacje Bemis Heights przesądzają o bitwie.',11],
+ ['17 X 1777','Kapitulacja Burgoyne\'a — punkt zwrotny wojny o niepodległość.',11],
+ ['1778–80','West Point nad Hudsonem — system redut.',12],
+ ['1781','Kampania południowa Greene\'a; scena z kocem.',13],
+ ['1783','Generał brygady armii amerykańskiej; koniec wojny.',null],
+ ['1794','Powstanie kościuszkowskie w Polsce.',null],
+ ['1797','Powrót do Ameryki; wieczory u Jeffersona w Filadelfii.',14],
+ ['5 V 1798','Testament: majątek na wykup i edukację zniewolonych; Jefferson wykonawcą.',15],
+ ['1817','Śmierć w Solurze. Testament na pół wieku przed zniesieniem niewolnictwa.',null],
+];
+
+const MUZYKA = [
+ ['M1 · Ocean','0:00–1:00','68 BPM, d-moll. Motyw Oceanu (ostinato low strings) + pierwsza fraza Tematu Kościuszki na wiolonczeli — urwana w 0:45.'],
+ ['M2 · Sztorm','1:00–2:15','~140 BPM. Braam nr 1 przy rafie. Cisza strukturalna ~1:30.'],
+ ['M3 · Nowy świat / Deklaracja','2:15–3:15','80 BPM, F→a. Narodziny Tematu Wolności „All Men" (czyste kwinty). Chór wordless (1/3).'],
+ ['M4 · Drukarnia / Egzamin','3:15–4:30','96 BPM. Jedyne miejsce z klawesynem — lekkość, precyzja.'],
+ ['M5 · Billingsport','4:30–5:00','76 BPM, B-dur. Temat Kościuszki w wariancie „pracy".'],
+ ['M6 · Saratoga','5:00–6:15','60→120 BPM. Rytm Wojny (werble + fife). Braam nr 2: pierwsza salwa. CISZA 6:00–6:04. Chór wordless (2/3).'],
+ ['M7 · West Point','6:15–7:00','84 BPM, F-dur. Tematy Kościuszki i Wolności splecione.'],
+ ['M8 · Karolina / Koc','7:00–7:45','58 BPM. Jedyny fortepian w filmie; wariant „serce".'],
+ ['M9 · Sumienie','7:45–8:45','~60 BPM = tykanie zegara (à la Dunkirk), e-moll zawieszony. Harmonika szklana Franklina. Temat Wolności w molu.'],
+ ['M10 · Testament / Finał','8:45–10:00','66 BPM, d-moll → D-DUR. Fraza wiolonczeli dokończona w 9:45. Jedyne pełne tutti. Chór wordless (3/3). Cisza ~9:14.'],
+];
+
+const REFERENCJE = [
+ {t:'Ref. twarzy: Kościuszko młody', st:'ok', stx:'Gotowe (kanon 9 VII)', opis:'Podstawa całej obsady — używać jako medias[role=image] w nano_banana_2/pro. Starszy Kościuszko = TA SAMA referencja + prompt „AGED to 52, grey-streaked queue". Panel arkusza z zarostem odrzucony; oczy ujednolicone: grey-green.', id:'media ee627ecc-b849-4a3f-901c-f938c1c0d3f4 (kopia 92680008) · cywilny: media 521256c0 · tweed (Kongres): job 9d7c1140 · od pleców 1E: job 092a52a5 · portret 1D: job 5b1b1e24'},
+ {t:'Ref. twarzy: Gates / oficer / sekretarz', st:'ok', stx:'Gotowe', opis:'Gates wgrany widgetem 14 VII, sekretarz uploadem Marcina 22 VII.', id:'Gates: media 5153a6df · oficer francuski: media aae0896b · sekretarz: media c00fe446 (+ b5c576e4, a17144d3)'},
+ {t:'Ref. twarzy: Jefferson + reszta obsady', st:'brak', stx:'Do uzupełnienia', opis:'Previz sceny 14 generowany z opisów kanonicznych — do regeneracji, gdy pojawi się portret Jeffersona. Franklin, Hull, Greene, żołnierz Billingsport, służący: nowe komplety z recastingu 9 VII istnieją tylko w tamtej sesji czatu — wgrać do Higgsfield widgetem, żeby mieć media_id. Casting aktorów (brief) docelowo dostarczy prawdziwe twarze.', id:'Stare joby (przed recastingiem): Franklin 32439cfc · Jefferson bf703b19 · Greene f0ae9ca4 · Hull 2143c16c · żołnierz Bill. 4991826b · służący 499cfaa8'},
+ {t:'Ref.: ranny chłopiec (mocap)', st:'ok', stx:'Gotowe', opis:'Warianty BEZ koca i Z kocem (koc „wędruje" przez 9A–9D). Uwaga: filtr NSFW blokuje śpiące dzieci — chłopiec okrętowy w SC. 2 zamieniony na ~20-latka.', id:'media 6ea67210 / 9931f966 / deaa7856 · styl SHOT 9C: 8178de04'},
+ {t:'Previz Saratoga I + II', st:'uwaga', stx:'II gotowy · I do rewizji', opis:'Previz II (9 ujęć) pasuje do kanonu Marcina. Pakiet warsztatowy I: ścieżki dialogowe K-01…K-06 / G-01…G-07 i timing 8×15 s wymagają aktualizacji pod kanon (wersja Marcina dłuższa: montaż 10 dni + epilog 17 X).', id:'II: 8149f1ec · d4ff18d9 · 0e0f9b80 · 33e5a4a4 · e0a6e3b6 · 5f9b7410 · 9251a3e2 · e655fc67 · 1cbaa2c1 — I: a0dd595c · 8b6871b2 · 9c5c7c6a · eb6fcc65 · 4c955a66'},
+ {t:'Previz Jefferson (9 ujęć)', st:'ok', stx:'Gotowe', opis:'Cała rozbudowana scena 14, z kluczowym ujęciem „trzy spojrzenia". Jefferson i służący bez ref. twarzy.', id:'637f152b · 6dfd1daa · 1163d3f5 · 37023f5b · 264900f2 · 3b125819 · 23ae77c2 · a5c9291a · 5e3faa49'},
+ {t:'Previz West Point (4 ujęcia)', st:'uwaga', stx:'7B/7C do regeneracji', opis:'Generowane soul_2 bez referencji twarzy — 7B i 7C do ponownej generacji z referencją Kościuszki.', id:'7A e954af1b · 7B a5b16c9a · 7C 15e43a5e · 7D a2625a2e'},
+ {t:'Klatki 9C — koc (Motion Control)', st:'uwaga', stx:'Klatki gotowe · czekają na klipy', opis:'Workflow: pierwsza klatka shotu → restyling nano_banana (2K, DOKŁADNY układ/poza/kadr) → klatka + klip → motion_control Kling 3.0, scene_control=image. Następny krok: wgrać mp4 (pocięte, kamera statyczna) → test 720p na 9C-3 → finały 1080p.', id:'9C-1: c948fb1e / 39127f80 (klatka 5071279f) · 9C-2: b33c2e54 / ae5fb61e (ea97f4a0) · 9C-3: 95974d3f / 4abe0fe8 (dd31231d) · 9C-4: e51891e8 / 268441de (9f79695b)'},
+ {t:'Scenografie i rekwizyty', st:'ok', stx:'Gotowe', opis:'PUŁAPKI: fasada drukarni jako referencja obrazkowa wywala filtr NSFW — używać opisu tekstowego. nano_banana_flash bywa masowo flagowany „nsfw" (fałszywe alarmy) → przechodzić na seedream_v4_5 (2560×1440) lub nano_banana_pro (dobry do tekstu na dokumentach).', id:'Sala Kongresu (5A v2): f05c8798 · pieczęć „Colonel of Engineers" (5C v2): 98fd3d60 · wnętrze drukarni (4A): 39e3b1bc · fasada: bbcce15d · mapa fortu (1F): be8e66f7'},
+];
+
+// ---------- RENDER ----------
+const POZ = {k_starszy:'center', jefferson:'center', sluzacy:'18% center'};
+function foto(id, kl){
+  const p = POSTACIE[id];
+  if(!p.foto || !PORTRETY[p.foto]) return `<span class="${kl?'mono-s':'mono'}" title="${p.n}">${p.mono||p.n[0]}</span>`;
+  const poz = POZ[p.foto] ? `style="object-position:${POZ[p.foto]}"` : '';
+  return `<img src="${PORTRETY[p.foto]}" alt="${p.n}" title="${p.n}" loading="lazy" ${poz} data-mono="${p.mono||p.n[0]}" data-kl="${kl?'mono-s':'mono'}" data-tytul="${p.n}">`;
+}
+function zamienNaMono(img){
+  const s = document.createElement('span');
+  s.className = img.dataset.kl; s.title = img.dataset.tytul; s.textContent = img.dataset.mono;
+  img.replaceWith(s);
+}
+function pilnujPortretow(){
+  document.querySelectorAll('img[data-mono]').forEach(img=>{
+    if(img.complete && img.naturalWidth===0) zamienNaMono(img);
+    else img.addEventListener('error', ()=>zamienNaMono(img), {once:true});
+  });
+}
+const KOLOR_POSTACI = {
+ k_mlody:'#e0b356', k_starszy:'#d97c4a', oficer_fr:'#4a7ba6', franklin:'#7fb3c8',
+ sekretarz:'#c48ab8', zolnierz_bill:'#a08056', gates:'#c95d5d', hull:'#5fa87a',
+ greene:'#86a05a', ranny:'#e3d9a8', jefferson:'#9a6fc4', sluzacy:'#6fc4b8',
+};
+// Obsada
+document.getElementById('obsada-grid').innerHTML = Object.entries(POSTACIE).map(([id,p])=>`
+  <div class="aktor" data-id="${id}" style="--lk:${KOLOR_POSTACI[id]}" onclick="filtruj('${id}')">
+    ${foto(id,false)}
+    <b>${p.n}</b><small>${p.sc}</small><small>${p.opis}</small>
+    ${!p.foto?'<small class="brak">brak referencji w Higgsfield — do wgrania</small>':''}
+  </div>`).join('');
+
+// Oś czasu — mapa narracyjna
+const TORY = ['k_mlody','oficer_fr','franklin','sekretarz','zolnierz_bill','gates','hull','ranny','greene','k_starszy','jefferson','sluzacy'];
+const LANE_W = 30;
+
+let scH = '';
+SCENY.forEach(s=>{
+  const akt = AKTY.find(a=>a.przed===s.nr);
+  if(akt) scH += `<div class="akt"><b>${akt.t}</b><span>${akt.s}</span></div>`;
+  const chipy = s.watki.map(w=>`<span class="chip" style="color:${WATKI[w].k}; border-color:${WATKI[w].k}">${WATKI[w].n.length>28?WATKI[w].n.slice(0,26)+'…':WATKI[w].n}</span>`).join('');
+  scH += `
+  <div class="scena" id="sc${s.nr}" data-chars="${s.chars.join(',')}" style="--kolor:${s.kolor}">
+    <div class="sc-head"><div><h3>SC. ${s.nr} · ${s.t}</h3><div class="lok">${s.lok}</div></div>
+    <div class="czas">${s.tc}<small>${s.rok}</small></div></div>
+    <p class="opis">${s.opis}</p>
+    <div class="pasek">${s.chars.map(c=>foto(c,true)).join('')}${chipy}<span class="chip cue">♩ ${s.cue}</span></div>
+    <details><summary>Szczegóły — dialogi · sekwencje · referencje</summary><div class="det">
+      ${s.dial?`<div><h4>Kluczowe dialogi</h4><p class="cytat">${s.dial}</p></div>`:''}
+      <div><h4>Sekwencje Seedance</h4><p>${s.seq} — pełne prompty multi-shot EN w „Kosciuszko_Seedance_prompty_15s.docx" (blok postaci + prompt sekwencji + master prompt; jedna scena = jeden seed).</p></div>
+      ${s.muz?`<div><h4>Muzyka</h4><p>${s.muz}</p></div>`:''}
+      ${s.ref?`<div><h4>Referencje Higgsfield</h4><p class="id-tech">${s.ref}</p></div>`:''}
+    </div></details>
+  </div>`;
+});
+const heads = TORY.map(id=>{
+  const p = POSTACIE[id], k = KOLOR_POSTACI[id];
+  const inner = (p.foto && PORTRETY[p.foto])
+    ? `<img src="${PORTRETY[p.foto]}" alt="${p.n}" ${POZ[p.foto]?`style="object-position:${POZ[p.foto]}"`:''} data-mono="${p.mono||p.n[0]}" data-kl="lm" data-tytul="${p.n}">`
+    : `<span class="lm">${p.mono||p.n[0]}</span>`;
+  return `<div class="lane-head" data-id="${id}" style="--lk:${k}" title="${p.n} — kliknij, żeby podświetlić" onclick="filtruj('${id}')">${inner}</div>`;
+}).join('');
+document.getElementById('os-czasu').innerHTML = `
+  <div id="mapa">
+    <div id="lanes" style="width:${TORY.length*LANE_W}px">
+      <div id="lane-heads">${heads}</div>
+      <svg id="mapa-svg" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div id="kol-sceny">${scH}</div>
+  </div>`;
+
+function rysujMape(){
+  const lanes = document.getElementById('lanes');
+  const svg = document.getElementById('mapa-svg');
+  if(!lanes || lanes.offsetParent===null){ return; }
+  const lr = lanes.getBoundingClientRect();
+  const W = TORY.length*LANE_W, H = lanes.offsetHeight;
+  svg.setAttribute('width', W); svg.setAttribute('height', H);
+  const laneX = id => TORY.indexOf(id)*LANE_W + LANE_W/2;
+  // pozycje kropek: środek nagłówka każdej sceny
+  const pozycje = SCENY.map(s=>{
+    const el = document.getElementById('sc'+s.nr);
+    const r = el.getBoundingClientRect();
+    return {nr:s.nr, chars:s.chars, y: r.top - lr.top + 34, t:s.t};
+  });
+  let out = '';
+  // poziome nici współobecności (pod liniami postaci)
+  pozycje.forEach(p=>{
+    if(p.chars.length>1){
+      const xs = p.chars.map(laneX);
+      out += `<line class="wsp" data-sc="${p.nr}" x1="${Math.min(...xs)}" y1="${p.y}" x2="${Math.max(...xs)}" y2="${p.y}" stroke="#98a2b0" stroke-opacity="0.35" stroke-width="1.4"/>`;
+    }
+    if(p.chars.length>0){
+      const mx = Math.max(...p.chars.map(laneX));
+      out += `<line class="dokarty" data-sc="${p.nr}" x1="${mx}" y1="${p.y}" x2="${W+14}" y2="${p.y}" stroke="#2a3444" stroke-width="1" stroke-dasharray="1 4"/>`;
+    }
+  });
+  // linie postaci
+  TORY.forEach(id=>{
+    const k = KOLOR_POSTACI[id];
+    const wyst = pozycje.filter(p=>p.chars.includes(id));
+    if(!wyst.length) return;
+    const x = laneX(id);
+    for(let i=0;i<wyst.length-1;i++){
+      const a=wyst[i], b=wyst[i+1];
+      const ciagla = (b.nr - a.nr) === 1;
+      out += `<line class="ln" data-char="${id}" x1="${x}" y1="${a.y}" x2="${x}" y2="${b.y}" stroke="${k}" stroke-width="${ciagla?2.5:1.6}" ${ciagla?'':'stroke-dasharray="3 6" opacity="0.55"'} stroke-linecap="round"/>`;
+    }
+    wyst.forEach(p=>{
+      out += `<circle class="kropka" data-char="${id}" cx="${x}" cy="${p.y}" r="5.5" fill="${k}" stroke="#0d1117" stroke-width="2" style="cursor:pointer"><title>${POSTACIE[id].n} — SC. ${p.nr} · ${p.t}</title></circle>`;
+    });
+  });
+  svg.innerHTML = out;
+  svg.querySelectorAll('.kropka').forEach(c=>c.addEventListener('click', ()=>filtruj(c.dataset.char)));
+  podswietlMape();
+}
+function podswietlMape(){
+  const svg = document.getElementById('mapa-svg'); if(!svg) return;
+  svg.querySelectorAll('.ln,.kropka').forEach(el=>{
+    el.style.opacity = (!aktywna || el.dataset.char===aktywna) ? '' : '0.10';
+  });
+  svg.querySelectorAll('.wsp').forEach(el=>{
+    const sc = SCENY.find(s=>s.nr==el.dataset.sc);
+    el.style.opacity = (!aktywna || (sc && sc.chars.includes(aktywna))) ? '' : '0.06';
+  });
+  document.querySelectorAll('.lane-head').forEach(h=>h.classList.toggle('aktywny', h.dataset.id===aktywna));
+}
+
+// Historia
+document.getElementById('hist').innerHTML = HISTORIA.map(ev=>`
+  <div class="hist-ev"><div class="data">${ev[0]}</div>${ev[1]} ${ev[2]?`<a href="#sc${ev[2]}">→ SC. ${ev[2]}</a>`:''}</div>`).join('');
+
+// Wątki
+document.getElementById('watki-grid').innerHTML = Object.values(WATKI).map(w=>`
+  <div class="karta" style="--kolor:${w.k}"><b>${w.n}</b><p>${w.opis}</p>
+  <div class="sc-linki">${w.sceny.map(n=>`<a href="#sc${n}">SC. ${n}</a>`).join('')}</div></div>`).join('');
+
+// Muzyka
+document.getElementById('muz-body').innerHTML = MUZYKA.map(m=>`<tr><td>${m[0]}</td><td>${m[1]}</td><td>${m[2]}</td></tr>`).join('');
+
+// Referencje
+const ST = {ok:'st-ok', uwaga:'st-uwaga', brak:'st-brak'};
+document.getElementById('ref-grid').innerHTML = REFERENCJE.map(r=>`
+  <div class="karta"><span class="status ${ST[r.st]}">${r.stx}</span><br><b>${r.t}</b><p>${r.opis}</p><div class="id-tech">${r.id}</div></div>`).join('');
+
+pilnujPortretow();
+
+// Filtr postaci
+let aktywna = null;
+function filtruj(id){
+  aktywna = (aktywna===id)? null : id;
+  document.querySelectorAll('.aktor').forEach(a=>a.classList.toggle('aktywny', a.dataset.id===aktywna));
+  document.querySelectorAll('.scena').forEach(s=>{
+    const ma = s.dataset.chars.split(',').includes(aktywna);
+    s.classList.toggle('przyg', aktywna!==null && !ma);
+  });
+  podswietlMape();
+  const fi = document.getElementById('filtr-info');
+  if(aktywna){ fi.style.display='block'; fi.innerHTML = `Podświetlone sceny: ${POSTACIE[aktywna].n} — ${POSTACIE[aktywna].sc} &nbsp;<span onclick="filtruj('${aktywna}')">wyczyść filtr</span>`; }
+  else fi.style.display='none';
+}
+
+// przerysowanie mapy przy każdej zmianie układu
+let rysT=null;
+function przerysuj(){ clearTimeout(rysT); rysT=setTimeout(rysujMape, 60); }
+window.addEventListener('resize', przerysuj);
+window.addEventListener('load', przerysuj);
+document.querySelectorAll('.scena details').forEach(d=>d.addEventListener('toggle', przerysuj));
+if(window.ResizeObserver){ new ResizeObserver(przerysuj).observe(document.getElementById('kol-sceny')); }
+rysujMape();
+</script>
+</body>
+</html>
