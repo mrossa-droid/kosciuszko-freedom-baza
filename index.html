@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KOŚCIUSZKO · FREEDOM — baza produkcyjna</title>
+<style>
+  :root{ --bg:#0d1117; --panel:#161d27; --line:#2a3444; --tx:#e6e2d8; --tx2:#98a2b0; --gold:#e0b356; }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--tx); font-family:Georgia,'Times New Roman',serif; min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+  .wrap{ max-width:760px; width:100%; }
+  h1{ font-size:30px; letter-spacing:.06em; color:var(--gold); text-align:center; }
+  .sub{ text-align:center; color:var(--tx2); font-size:14.5px; margin:10px 0 34px; line-height:1.6; }
+  .lang{ font-family:Helvetica,Arial,sans-serif; font-size:11px; letter-spacing:.14em; color:var(--tx2); text-transform:uppercase; margin:26px 0 10px; border-bottom:1px solid var(--line); padding-bottom:6px; }
+  a.card{ display:block; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px 20px; margin-bottom:12px; text-decoration:none; color:var(--tx); transition:border-color .15s, transform .15s; }
+  a.card:hover{ border-color:var(--gold); transform:translateX(4px); }
+  a.card b{ color:var(--gold); font-size:16.5px; }
+  a.card span{ display:block; color:var(--tx2); font-size:13.5px; margin-top:5px; line-height:1.55; }
+  .foot{ text-align:center; color:var(--tx2); font-size:12px; margin-top:36px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>KOŚCIUSZKO · „FREEDOM"</h1>
+  <p class="sub">Baza wszystkich zależności filmu krótkometrażowego (~7 min, produkcja w pełni AI):<br>postacie · sceny · wątki · oś czasu · muzyka · referencje generacyjne</p>
+
+  <div class="lang">Polski</div>
+  <a class="card" href="Kosciuszko_Graf_Zaleznosci.html">
+    <b>🔗 Graf zależności</b>
+    <span>Mapa postaci — kółka z twarzami i podpisane relacje „kto z kim i dlaczego" — oraz pełny graf: 120 węzłów / 221 krawędzi z filtrami i wyszukiwarką. Kółka można przeciągać.</span>
+  </a>
+  <a class="card" href="Kosciuszko_Baza_Zaleznosci.html">
+    <b>📜 Oś czasu</b>
+    <span>Pionowa oś z mapą narracyjną torów bohaterów, karty 16 scen w 3 aktach, historia 1746–1817, wątki, cue sheet M1–M10 i referencje ze statusami.</span>
+  </a>
+
+  <div class="lang">English</div>
+  <a class="card" href="Kosciuszko_Graph_EN.html">
+    <b>🔗 Dependency graph</b>
+    <span>Character map with faces and labelled relationships, plus the full production graph — 120 nodes / 221 edges with filters and search.</span>
+  </a>
+  <a class="card" href="Kosciuszko_Timeline_EN.html">
+    <b>📜 Timeline</b>
+    <span>Vertical timeline with a narrative map of character lanes, 16 scene cards in 3 acts, history 1746–1817, themes, music cue sheet and AI references.</span>
+  </a>
+
+  <p class="foot">Marcin Rossa · creait.me · 2026</p>
+</div>
+</body>
+</html>
