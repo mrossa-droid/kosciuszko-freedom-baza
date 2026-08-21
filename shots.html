@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FREEDOM — Stills</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500&family=EB+Garamond:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0b0f14; --panel:#121924; --line:#233042;
+    --tx:#e9e4d8; --tx2:#93a0b0; --gold:#e0b356; --gold2:#c89a3f;
+  }
+  *{ margin:0; padding:0; box-sizing:border-box; }
+  body{ background:var(--bg); color:var(--tx); font-family:'EB Garamond', Garamond, Georgia, serif; min-height:100vh; }
+  nav{
+    position:sticky; top:0; z-index:10; display:flex; justify-content:center; gap:6px; flex-wrap:wrap;
+    padding:14px 12px; background:rgba(11,15,20,.9); backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    font-family:'Cinzel', Georgia, serif; font-size:12px; letter-spacing:.22em; text-transform:uppercase;
+  }
+  nav a{ color:var(--tx2); text-decoration:none; padding:6px 16px; border-radius:18px; transition:color .15s; }
+  nav a:hover{ color:var(--gold); }
+  nav a.on{ color:var(--gold); border:1px solid var(--line); background:#0f1520; }
+  .head{ text-align:center; padding:clamp(40px,7vh,70px) 20px 10px; }
+  .over{ font-family:'Cinzel',serif; font-size:12px; letter-spacing:.5em; text-indent:.5em; color:var(--tx2); text-transform:uppercase; }
+  h1{ font-family:'Cinzel',serif; font-weight:400; font-size:clamp(34px,6vw,54px); letter-spacing:.3em; text-indent:.3em; margin-top:14px;
+      background:linear-gradient(180deg,#f6efe0 20%, var(--gold) 85%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .sub{ font-style:italic; color:var(--tx2); margin-top:10px; font-size:15.5px; }
+  .wrap{ max-width:1200px; margin:0 auto; padding:20px 20px 70px; }
+  .scena{ margin-top:46px; }
+  .scena h2{ font-family:'Cinzel',serif; font-weight:500; font-size:16px; letter-spacing:.14em; color:var(--gold); text-transform:uppercase; border-bottom:1px solid var(--line); padding-bottom:8px; }
+  .scena h2 span{ float:right; font-family:'EB Garamond',serif; font-size:14px; color:var(--tx2); letter-spacing:.04em; text-transform:none; }
+  .grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:12px; margin-top:14px; }
+  figure{ position:relative; cursor:pointer; border:1px solid var(--line); border-radius:8px; overflow:hidden; background:#000;
+    transition:transform .15s, border-color .15s; }
+  figure:hover{ transform:scale(1.025); border-color:var(--gold2); z-index:2; }
+  figure img{ display:block; width:100%; aspect-ratio:16/9; object-fit:cover; }
+  figcaption{ position:absolute; left:0; bottom:0; padding:3px 9px; font-size:12px; color:var(--gold);
+    background:rgba(11,15,20,.75); border-top-right-radius:8px; letter-spacing:.06em; }
+  #lb{ position:fixed; inset:0; z-index:50; background:rgba(5,8,12,.96); display:none; align-items:center; justify-content:center; flex-direction:column; gap:14px; padding:30px; }
+  #lb.open{ display:flex; }
+  #lb img{ max-width:94vw; max-height:82vh; border:1px solid var(--line); border-radius:6px; }
+  #lb .cap{ color:var(--tx); font-size:16px; letter-spacing:.06em; }
+  #lb .cap b{ color:var(--gold); font-family:'Cinzel',serif; font-weight:500; }
+  #lb .hint{ color:#6d7887; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; font-family:'Cinzel',serif; }
+  footer{ margin-top:70px; padding:30px 20px 40px; text-align:center; border-top:1px solid var(--line); }
+  footer .prod{ font-family:'Cinzel',serif; font-size:12px; letter-spacing:.3em; text-transform:uppercase; color:var(--tx2); }
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="Kosciuszko_Graph_EN.html">Dependency&nbsp;Graph</a>
+  <a href="Kosciuszko_Timeline_EN.html">Timeline</a>
+  <a class="on" href="shots.html">Stills</a>
+  <a href="credits.html">Credits</a>
+</nav>
+
+<div class="head">
+  <div class="over">Every eight seconds of the film</div>
+  <h1>STILLS</h1>
+  <p class="sub">132 frames from the final cut &#183; 0:00&#8211;17:28 &#183; grouped by scene &#183; click any frame to enlarge</p>
+</div>
+
+<div class="wrap" id="gal"></div>
+
+<div id="lb" onclick="this.classList.remove('open')">
+  <img id="lbimg" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" alt="">
+  <div class="cap" id="lbcap"></div>
+  <div class="hint">click anywhere to close &#183; &#8592; &#8594; to browse</div>
+</div>
+
+<footer><div class="prod">A James Drake Media &amp; Creait.Me Production</div></footer>
+
+<script>
+const SCENES = [
+ [1,'Atlantic Ocean — dawn','0:00–0:56',0,56],
+ [2,'Ship deck — dawn · the memory frame','0:56–1:52',56,112],
+ [3,'Storm front','1:52–2:24',112,144],
+ [4,'The tempest','2:24–3:12',144,192],
+ [5,'Fighting for the ship','3:12–3:40',192,220],
+ [6,'Calm — landfall','3:40–4:08',220,248],
+ [7,'Philadelphia — the Declaration','4:08–4:48',248,288],
+ [8,"Franklin's print shop — the exam",'4:48–6:16',288,376],
+ [9,'Pennsylvania State House — the commission','6:16–6:48',376,408],
+ [10,'Fort Billingsport — construction','6:48–7:20',408,440],
+ [11,'Saratoga — the battle','7:20–10:56',440,656],
+ [12,'West Point — map and compass','10:56–11:56',656,716],
+ [13,'Carolinas — swamps, Yadkin, the blanket','11:56–13:12',716,792],
+ [14,'Yorktown — the surrender','13:12–14:08',792,848],
+ [15,"Jefferson's study — the confrontation",'14:08–16:44',848,1004],
+ [16,'The will','16:44–17:08',1004,1028],
+ [17,'Epilogue — hills at dawn','17:08–17:28',1028,1056],
+];
+const fmt = s => Math.floor(s/60) + ':' + String(s%60).padStart(2,'0');
+const gal = document.getElementById('gal');
+const all = [];
+let html = '';
+for (const [nr,t,tc,a,b] of SCENES){
+  html += `<section class="scena"><h2>SC. ${nr} · ${t} <span>${tc}</span></h2><div class="grid">`;
+  for (let s=Math.ceil(a/8)*8; s<b; s+=8){
+    const n = s/8 + 1;
+    const f = 'shots/f_' + String(n).padStart(3,'0') + '.jpg';
+    const idx = all.length;
+    all.push({f, sc:`SC. ${nr} · ${t}`, tm:fmt(s)});
+    html += `<figure onclick="open_(${idx})"><img loading="lazy" src="${f}" alt="${fmt(s)}"><figcaption>${fmt(s)}</figcaption></figure>`;
+  }
+  html += '</div></section>';
+}
+gal.innerHTML = html;
+let cur = 0;
+function open_(i){
+  cur = i;
+  document.getElementById('lbimg').src = all[i].f;
+  document.getElementById('lbcap').innerHTML = '<b>' + all[i].sc + '</b> — ' + all[i].tm;
+  document.getElementById('lb').classList.add('open');
+}
+document.addEventListener('keydown', e => {
+  const lb = document.getElementById('lb');
+  if (!lb.classList.contains('open')) return;
+  if (e.key === 'Escape') lb.classList.remove('open');
+  if (e.key === 'ArrowRight' && cur < all.length-1) open_(cur+1);
+  if (e.key === 'ArrowLeft' && cur > 0) open_(cur-1);
+});
+</script>
+</body>
+</html>
