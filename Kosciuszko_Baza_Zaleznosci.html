@@ -119,7 +119,7 @@ footer{margin-top:70px; padding-top:22px; border-top:1px solid var(--line); colo
 <div id="os-czasu"></div>
 
 <h2 class="sekcja" id="historia">Oś czasu historyczna · 1746–1817</h2>
-<div class="sekcja-sub">Fakty zweryfikowane w źródłach (Davies, Rostworowski, Journals of Congress, testament).</div>
+<div class="sekcja-sub">Fakty zweryfikowane w źródłach z epoki (Journals of Congress, testament).</div>
 <div class="hist" id="hist"></div>
 
 <h2 class="sekcja" id="watki">Wątki</h2>
@@ -127,7 +127,7 @@ footer{margin-top:70px; padding-top:22px; border-top:1px solid var(--line); colo
 <div class="karty" id="watki-grid"></div>
 
 <h2 class="sekcja" id="muzyka">Muzyka · koncepcja „Płomień"</h2>
-<div class="sekcja-sub">Hybryda Zimmer + koloryt epoki · d-moll → D-DUR · fraza wiolonczeli urwana w 0:45, dokończona w 9:45 · pełne tutti tylko w M10 · braam max 2× · chór tylko wordless · trzy ciszy strukturalne: ~1:30, 6:00, ~9:14.</div>
+<div class="sekcja-sub">Nowoczesna hybryda orkiestrowa + koloryt epoki · d-moll → D-DUR · fraza wiolonczeli urwana w 0:45, dokończona w 9:45 · pełne tutti tylko w M10 · braam max 2× · chór tylko wordless · trzy ciszy strukturalne: ~1:30, 6:00, ~9:14.</div>
 <table class="muz-t"><tbody id="muz-body"></tbody></table>
 
 <h2 class="sekcja" id="referencje">Referencje AI · Higgsfield</h2>
@@ -135,7 +135,7 @@ footer{margin-top:70px; padding-top:22px; border-top:1px solid var(--line); colo
 <div class="karty" id="ref-grid"></div>
 
 <footer>
-  Dokumenty źródłowe w folderze projektu: scenariusz pl v2 (+ PL_EN, dialogi_EN, Gates rozbudowany = kanon Saratogi) · Prompty Seedance 15 s · Biblia techniczna v1.0 · Biblia muzyczna · SEQ 9 animacja/mocap · Brief castingowy · koszty JD Media · skany Davies / Rostworowski / testament.<br>
+  Dokumenty źródłowe w folderze projektu: scenariusz pl v2 (+ PL_EN, dialogi_EN, Gates rozbudowany = kanon Saratogi) · Prompty Seedance 15 s · Biblia techniczna v1.0 · Biblia muzyczna · SEQ 9 animacja/mocap · skany testamentu.<br>
   Look: ARRI ALEXA 65 + vintage Panavision · Kodak Vision3 16 mm (250D/500T) · 24 fps · 16:9 UHD · LUT Kodak 2383 · ziarno i halacja jedną warstwą w poście · światło wyłącznie motywowane.
 </footer>
 </div>
@@ -274,14 +274,14 @@ const MUZYKA = [
  ['M6 · Saratoga','5:00–6:15','60→120 BPM. Rytm Wojny (werble + fife). Braam nr 2: pierwsza salwa. CISZA 6:00–6:04. Chór wordless (2/3).'],
  ['M7 · West Point','6:15–7:00','84 BPM, F-dur. Tematy Kościuszki i Wolności splecione.'],
  ['M8 · Karolina / Koc','7:00–7:45','58 BPM. Jedyny fortepian w filmie; wariant „serce".'],
- ['M9 · Sumienie','7:45–8:45','~60 BPM = tykanie zegara (à la Dunkirk), e-moll zawieszony. Harmonika szklana Franklina. Temat Wolności w molu.'],
+ ['M9 · Sumienie','7:45–8:45','~60 BPM = tykanie zegara, e-moll zawieszony. Harmonika szklana Franklina. Temat Wolności w molu.'],
  ['M10 · Testament / Finał','8:45–10:00','66 BPM, d-moll → D-DUR. Fraza wiolonczeli dokończona w 9:45. Jedyne pełne tutti. Chór wordless (3/3). Cisza ~9:14.'],
 ];
 
 const REFERENCJE = [
  {t:'Ref. twarzy: Kościuszko młody', st:'ok', stx:'Gotowe (kanon 9 VII)', opis:'Podstawa całej obsady — używać jako medias[role=image] w nano_banana_2/pro. Starszy Kościuszko = TA SAMA referencja + prompt „AGED to 52, grey-streaked queue". Panel arkusza z zarostem odrzucony; oczy ujednolicone: grey-green.', id:'media ee627ecc-b849-4a3f-901c-f938c1c0d3f4 (kopia 92680008) · cywilny: media 521256c0 · tweed (Kongres): job 9d7c1140 · od pleców 1E: job 092a52a5 · portret 1D: job 5b1b1e24'},
  {t:'Ref. twarzy: Gates / oficer / sekretarz', st:'ok', stx:'Gotowe', opis:'Gates wgrany widgetem 14 VII, sekretarz uploadem Marcina 22 VII.', id:'Gates: media 5153a6df · oficer francuski: media aae0896b · sekretarz: media c00fe446 (+ b5c576e4, a17144d3)'},
- {t:'Ref. twarzy: Jefferson + reszta obsady', st:'brak', stx:'Do uzupełnienia', opis:'Previz sceny 14 generowany z opisów kanonicznych — do regeneracji, gdy pojawi się portret Jeffersona. Franklin, Hull, Greene, żołnierz Billingsport, służący: nowe komplety z recastingu 9 VII istnieją tylko w tamtej sesji czatu — wgrać do Higgsfield widgetem, żeby mieć media_id. Casting aktorów (brief) docelowo dostarczy prawdziwe twarze.', id:'Stare joby (przed recastingiem): Franklin 32439cfc · Jefferson bf703b19 · Greene f0ae9ca4 · Hull 2143c16c · żołnierz Bill. 4991826b · służący 499cfaa8'},
+ {t:'Ref. twarzy: Jefferson + reszta obsady', st:'brak', stx:'Do uzupełnienia', opis:'Previz sceny 14 generowany z opisów kanonicznych — do regeneracji, gdy pojawi się portret Jeffersona. Franklin, Hull, Greene, żołnierz Billingsport, służący: nowe komplety z recastingu 9 VII istnieją tylko w tamtej sesji czatu — wgrać do Higgsfield widgetem, żeby mieć media_id.', id:'Stare joby (przed recastingiem): Franklin 32439cfc · Jefferson bf703b19 · Greene f0ae9ca4 · Hull 2143c16c · żołnierz Bill. 4991826b · służący 499cfaa8'},
  {t:'Ref.: ranny chłopiec (mocap)', st:'ok', stx:'Gotowe', opis:'Warianty BEZ koca i Z kocem (koc „wędruje" przez 9A–9D). Uwaga: filtr NSFW blokuje śpiące dzieci — chłopiec okrętowy w SC. 2 zamieniony na ~20-latka.', id:'media 6ea67210 / 9931f966 / deaa7856 · styl SHOT 9C: 8178de04'},
  {t:'Previz Saratoga I + II', st:'uwaga', stx:'II gotowy · I do rewizji', opis:'Previz II (9 ujęć) pasuje do kanonu Marcina. Pakiet warsztatowy I: ścieżki dialogowe K-01…K-06 / G-01…G-07 i timing 8×15 s wymagają aktualizacji pod kanon (wersja Marcina dłuższa: montaż 10 dni + epilog 17 X).', id:'II: 8149f1ec · d4ff18d9 · 0e0f9b80 · 33e5a4a4 · e0a6e3b6 · 5f9b7410 · 9251a3e2 · e655fc67 · 1cbaa2c1 — I: a0dd595c · 8b6871b2 · 9c5c7c6a · eb6fcc65 · 4c955a66'},
  {t:'Previz Jefferson (9 ujęć)', st:'ok', stx:'Gotowe', opis:'Cała rozbudowana scena 14, z kluczowym ujęciem „trzy spojrzenia". Jefferson i służący bez ref. twarzy.', id:'637f152b · 6dfd1daa · 1163d3f5 · 37023f5b · 264900f2 · 3b125819 · 23ae77c2 · a5c9291a · 5e3faa49'},

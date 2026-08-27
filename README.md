@@ -10,7 +10,7 @@ American independence. A fully AI-crafted short film, runtime **17 min 30 s**.
 | Page | What's inside |
 |---|---|
 | [`index.html`](index.html) | Landing page — film overview and entry points |
-| [`Kosciuszko_Graph_EN.html`](Kosciuszko_Graph_EN.html) | **Interactive dependency graph** — character map (portraits + labelled relationships) and the full production graph: 120 nodes / 221 edges with filters and search; nodes stay where you drop them |
+| [`Kosciuszko_Graph_EN.html`](Kosciuszko_Graph_EN.html) | **Interactive dependency graph** — character map (portraits + labelled relationships) and the full production graph: 119 nodes / 221 edges with filters and search; nodes stay where you drop them |
 | [`Kosciuszko_Timeline_EN.html`](Kosciuszko_Timeline_EN.html) | **Vertical timeline with a narrative map** — character lanes, 16 scene cards in 3 acts, history 1746–1817, themes, music cue sheet M1–M10, AI reference statuses |
 | [`credits.html`](credits.html) | **Credits** — full cast & crew of the film |
 
